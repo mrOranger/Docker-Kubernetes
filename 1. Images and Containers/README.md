@@ -40,3 +40,40 @@ docker run node -it
 where the flag `-it`, indicates that we are going to run the command interactively. Finally, the node shell will be attached to our shell, and we can use any javascript and node instructions.
 
 ### Dockerfile
+
+Up to this moment, we download a Docker container based on an existing image, hosted in the Docker Hub. However, most of the time, you would create your Docker Container using a custom Image, defined up your needs. Creating a custom Docker Image means define a **Dockerfile**, that is a set of instructions interpreted by the Docker Engine to create a Docker Container. Therefore, a Dockerfile defines our Image.
+
+Now, our goal will be to create a full-operating container, exposing on port 80/tcp, a web-server created using node.js and express library. In this directory you will find the complete source code, however, let's focus on the definition of [Dockerfile](./Dockerfile). Opening the code you will find the following command:
+
+* `FROM`. Since we do not want to create a container from scratch (thus starting only from an operating system), we will start by a default base Docker image, available in the Docker Hub. That is, FROM indicates to Docker Engine to download the image from the Docker Hub, and then appending the next command.
+* `WORKDIR`. Once the base image defined using the `FROM` keyword has been downloaded successfully, every next command defined in the Dockerfile, will be executed in the root directory, that in `/`. However, we would like to execute our project in a separate folder, outside the root directory. This new folder, has been specified using this command, and will be `/var/www`. If no folder will be found by Docker, a new one will be created.
+* `COPY`. Up to this moment, we have a working Image. However we need to transfer our file inside the Container that will be created, to execute our web server. That is, `COPY` does just what is means, that is: copy a file from a source to a destination. The source file will be indicated using the first parameter of the command, and the destination folder will be indicating in the second parameter. Since our working directory has been set up to `/var/www`, `package.json` and `package-lock.json` will be copied here.
+* `RUN`. Running a web server in node, using Express, requires installing some dependencies. Once the dependencies file has been copied inside the container, we need to tell NPM to install those dependencies. Therefore, `RUN` executes a command, specified as parameter; that is `npm install`, in our case.
+* `EXPOSE`. Our web server is working on port 80/tcp automatically, without executing any additional Docker command. However, is a good practice to indicating the exposed port of the Container, using this command.
+* `CMD`. Finally, everything as has been set-up, therefore, we are ready to run our application. `CMD`, executes a command defined as a set of values, that is: `CMD ["npm", "run", "start"]`. Since `start` is default command that you can find in [package.json](./package.json), and is used to start the server.
+
+However, in the Dockerfile you will find a strange order of command. You would probably ask to yourself: "Why you just copy 'package.json' and 'package-lock.json' first, and then the source code later?". The answer is pretty complicated, and we will talk about this feature later. For the moment, you need to known that is just an optimization technique.
+
+Once everything has been created, we need to create our image from this Dockerfile, and the create the new Container from this image. To create the image, we need to move inside this folder, and then execute the command:
+
+```bash
+docker build .
+```
+
+`docker build`, is used to indicate to the Docker Engine to create an image starting from a Dockerfile inside the specified folder. That is, since we moved into the current directory, the Dockerfile can be found `.` here. Once the process has been completed, the last output will be something like this: `writing image sha256:80d8404ae1480bfe8fb00a174ae90c855cb125120121a9decc8907c07bf9f710`; that is, the string starting from `80d8` is the id of our created image.
+
+Now, the next step will be to create the Container from the Image, and we can do this by executing the command:
+
+```shell
+docker run 80d8
+```
+
+fortunately, since the ids of the Images are quite longer, we can specify the first four digits, and Docker will understand automatically the Image to use to create the Container. After that, you will probably notice a log message indicating that the web server is listening on port 80. However, making a request to url `http://localhost`, nothing happens ...
+
+The explanation about why the application is not working, is that Docker executes Containers inside a protected environment, having a custom subnetwork. To expose a port from the Docker network to the host machine network, we have to add a new parameter to the executing command, that is:
+
+```shell
+docker run -p 80:80 80d8
+```
+
+The flag `-p 80:80`, indicates Docker to bind the exposed port 80 of the Container, to the machine internal port 80. The reading order of this command is: `<host-port>:<container-exposed-port>`. Finally, making a request to URL `http://localhost`, we will receive our "hello world" message.

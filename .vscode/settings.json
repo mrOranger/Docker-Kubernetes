@@ -1,17 +1,22 @@
 {
-    "editor.fontFamily": "Fira Code",
+    "editor.fontFamily": "Overpass Mono",
     "editor.fontSize": 18,
     "editor.indentSize": "tabSize",
     "editor.insertSpaces": true,
     "editor.lineHeight": 36,
     "editor.fontLigatures": true,
     "editor.fontVariations": true,
-    "editor.tabSize": 4,
     "[json]": {
         "editor.autoIndent": "keep",
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascript]": {
+        "editor.formatOnSave": true,
+        "editor.maxTokenizationLineLength": 2500,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "[yaml]": {
-        "editor.autoIndent": "keep",
+        "editor.autoIndent": "keep"
     }
 }
