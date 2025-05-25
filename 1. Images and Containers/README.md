@@ -5,15 +5,15 @@ Let's dive now in the first chapter of this repository, where we will talk about
 
 ## Images
 
-Containers are the basic executable unit, through out which can run our application. Building a Container requires a set of instructions, to create the basic environment and deploy our source code. The set of instructions used to create the container is defined in an Image.
+Containers are the basic executable unit, through out which can run our application. Building a Container requires a set of instructions, to create the basic environment and deploy our source code. The set of instructions used to create the Container is defined in an Image.
 
-Therefore, Images are blueprints through we can create different containers, as we can see from this figure:
+Therefore, Images are blueprints through we can create different Containers, as we can see from this figure:
 
 <div style="width: 100%">
     <img src="../assets/1. Images and Containers/Images.png" alt="Image" />
 </div>
 
-There are different ways to create a Container using an image. However, easiest way is to get an existing image from the [Docker Hub](https://hub.docker.com/), the official repository of Docker where you can define any image for your needs.
+There are different ways to create a Container using an Image. However, easiest way is to get an existing Image from the [Docker Hub](https://hub.docker.com/), the official repository of Docker where you can define any Image for your needs.
 
 Moreover, running this command:
 
@@ -21,17 +21,17 @@ Moreover, running this command:
 docker run node
 ```
 
-Docker Engine will automatically download and run a container using an Image named "node" inside the Docker Hub. Moreover, running this command, you will probably notice that the first output message indicates that the Docker is unable to get the image locally, and then is going to pull the image from the remote repository.
+Docker Engine will automatically download and run a Container using an Image named "node" inside the Docker Hub. Moreover, running this command, you will probably notice that the first output message indicates that the Docker is unable to get the Image locally, and then is going to pull the Image from the remote repository.
 
-Once the download will be completed, and the Container has been created, we can check the running container using the command:
+Once the download will be completed, and the Container has been created, we can check the running Container using the command:
 
 ```shell
 docker ps -a
 ```
 
-where `ps` stands for "processes" and `-a` stands for "all". That is: "show me all the running processes, therefore all the running containers, with their settings".
+where `ps` stands for "processes" and `-a` stands for "all". That is: "show me all the running processes, therefore all the running Containers, with their settings".
 
-The "node" image that we download, is not configured to run in background, because is nothing more than a standalone node engine, where we can only run command in the shell. However, we can interact directly to our container by using the command:
+The "node" Image that we download, is not configured to run in background, because is nothing more than a standalone node engine, where we can only run command in the shell. However, we can interact directly to our Container by using the command:
 
 ```shell
 docker run node -it
@@ -41,26 +41,45 @@ where the flag `-it`, indicates that we are going to run the command interactive
 
 ### Dockerfile
 
-Up to this moment, we download a Docker container based on an existing image, hosted in the Docker Hub. However, most of the time, you would create your Docker Container using a custom Image, defined up your needs. Creating a custom Docker Image means define a **Dockerfile**, that is a set of instructions interpreted by the Docker Engine to create a Docker Container. Therefore, a Dockerfile defines our Image.
+Up to this moment, we downloaded a Docker Container based on an existing Image hosted in the Docker Hub. However, most of the time, you would create your Docker Container using a custom Image, defined on the basis of your need. Creating a custom Docker Image means define a **Dockerfile**, that we can describe in the following way:
 
-Now, our goal will be to create a full-operating container, exposing on port 80/tcp, a web-server created using node.js and express library. In this directory you will find the complete source code, however, let's focus on the definition of [Dockerfile](./Dockerfile). Opening the code you will find the following command:
+> A Dockerfile is a set of instructions, interpreted by the Docker Engine and that defines an Image, to be used to create a Container.
 
-* `FROM`. Since we do not want to create a container from scratch (thus starting only from an operating system), we will start by a default base Docker image, available in the Docker Hub. That is, FROM indicates to Docker Engine to download the image from the Docker Hub, and then appending the next command.
-* `WORKDIR`. Once the base image defined using the `FROM` keyword has been downloaded successfully, every next command defined in the Dockerfile, will be executed in the root directory, that in `/`. However, we would like to execute our project in a separate folder, outside the root directory. This new folder, has been specified using this command, and will be `/var/www`. If no folder will be found by Docker, a new one will be created.
-* `COPY`. Up to this moment, we have a working Image. However we need to transfer our file inside the Container that will be created, to execute our web server. That is, `COPY` does just what is means, that is: copy a file from a source to a destination. The source file will be indicated using the first parameter of the command, and the destination folder will be indicating in the second parameter. Since our working directory has been set up to `/var/www`, `package.json` and `package-lock.json` will be copied here.
-* `RUN`. Running a web server in node, using Express, requires installing some dependencies. Once the dependencies file has been copied inside the container, we need to tell NPM to install those dependencies. Therefore, `RUN` executes a command, specified as parameter; that is `npm install`, in our case.
-* `EXPOSE`. Our web server is working on port 80/tcp automatically, without executing any additional Docker command. However, is a good practice to indicating the exposed port of the Container, using this command.
+The workflow starting from Dockerfile, and that produces a Container as output, can be described in the following figure:
+
+<div style="width: 100%">
+    <img src="../assets/1. Images and Containers/Dockerfile Workflow.png" alt="Dockerfile Workflow" />
+</div>
+
+Now, our goal is to create a fully operating Container, exposing on port 80/tcp a web-server created using node.js and Express library. In this directory you will find the complete source code of the web server, however, let's focus on the definition of [Dockerfile](./Dockerfile).
+
+Opening the Dockerfile, you will find a set of instructions, followed by some keywords:
+
+* `FROM`. Since we do not want to create a Container from scratch (thus starting only from an operating system, like Debian), we will start by a default base Docker Image available in the Docker Hub. That is, `FROM` indicates to the Docker Engine to download the Image from the Docker Hub, and then appending the next command.
+
+Just a reminder about this command. `FROM` does not download an Image from the Docker Hub, each time we using the Dockerfile to create an Image. Therefore, there is an internal cache in Docker, storing Images previously downloaded or created, to prevent continuing downloads from the Docker Hub.
+
+* `WORKDIR`. Once the base Image defined using the `FROM` keyword has been downloaded successfully, every next command defined in the Dockerfile, will be executed in the root directory `/`. However, we would like to execute our project in a different subfolder. To specify that up to this moment, this new folder will be the context of each new commands' execution, we have to use this command, requiring as parameter the folder's representing the execution context.
+
+* `COPY`. Up to this moment, we have a working Image. However we need to transfer our file inside the Container that will be created, to execute our web server. That is, `COPY` does just what is means, that is: copy a file from a source to a destination. The source file will be indicated using the first parameter of the command, and the destination folder will be indicated as the second parameter. Since our working directory has been set up to `/var/www`, `package.json` and `package-lock.json` will be copied here.
+
+* `RUN`. Running a web server in node, using Express, requires installing some dependencies. Once the dependencies file has been copied inside the Container, we have to run NPM and install all the dependencies. Therefore, `RUN` executes a command that is specified as parameter; that is `npm install`, in our case.
+
+* `EXPOSE`. Our web server is working on port 80/tcp automatically without executing any additional Docker command. However, is a good practice to indicating the exposed port of the Container, using this command. `EXPOSE`, in fact, works as a documentation label, and does not execute any command.
+
 * `CMD`. Finally, everything as has been set-up, therefore, we are ready to run our application. `CMD`, executes a command defined as a set of values, that is: `CMD ["npm", "run", "start"]`. Since `start` is default command that you can find in [package.json](./package.json), and is used to start the server.
 
 However, in the Dockerfile you will find a strange order of command. You would probably ask to yourself: "Why you just copy 'package.json' and 'package-lock.json' first, and then the source code later?". The answer is pretty complicated, and we will talk about this feature later. For the moment, you need to known that is just an optimization technique.
 
-Once everything has been created, we need to create our image from this Dockerfile, and the create the new Container from this image. To create the image, we need to move inside this folder, and then execute the command:
+Moreover, another question could be: "Why did we use two separate commands: `RUN` to install dependencies and `CMD` to start the web server?". The answer is that: while `RUN` is executed during the Image's creation's process; `CMD` will be executed once the Image has been created, and the corresponding Container is starting.
+
+Once everything has been created, we need to create our Image from this Dockerfile, and the create the new Container from this Image. To create the Image, we need to move inside the current folder, and then execute the command:
 
 ```bash
 docker build .
 ```
 
-`docker build`, is used to indicate to the Docker Engine to create an image starting from a Dockerfile inside the specified folder. That is, since we moved into the current directory, the Dockerfile can be found `.` here. Once the process has been completed, the last output will be something like this: `writing image sha256:80d8404ae1480bfe8fb00a174ae90c855cb125120121a9decc8907c07bf9f710`; that is, the string starting from `80d8` is the id of our created image.
+`docker build`, is used to indicate to the Docker Engine to create an Image starting from a Dockerfile inside the specified folder. That is, since we moved into the current directory, the Dockerfile can be found in `.`. Once the process has been completed, the last output will be something like this: `writing image sha256:80d8404ae1480bfe8fb00a174ae90c855cb125120121a9decc8907c07bf9f710`; that is, the string starting from `80d8` is the id of our created Image.
 
 Now, the next step will be to create the Container from the Image, and we can do this by executing the command:
 
@@ -68,12 +87,114 @@ Now, the next step will be to create the Container from the Image, and we can do
 docker run 80d8
 ```
 
-fortunately, since the ids of the Images are quite longer, we can specify the first four digits, and Docker will understand automatically the Image to use to create the Container. After that, you will probably notice a log message indicating that the web server is listening on port 80. However, making a request to url `http://localhost`, nothing happens ...
+fortunately, since the ids of the Images are quite longer, we can specify only the first four digits, and Docker will understand automatically the Image's complete id to use to create the Container. After that, you will probably notice a log message indicating that the web server is listening on port 80. However, making a request to url `http://localhost`, nothing happens ...
 
-The explanation about why the application is not working, is that Docker executes Containers inside a protected environment, having a custom subnetwork. To expose a port from the Docker network to the host machine network, we have to add a new parameter to the executing command, that is:
+The explanation about why the application is not working, is that Docker executes Containers inside a protected environment, having an own subnetwork. To expose a port from the Docker network to the host machine network, we have to add a new parameter to the executing command, that is:
 
 ```shell
 docker run -p 80:80 80d8
 ```
 
 The flag `-p 80:80`, indicates Docker to bind the exposed port 80 of the Container, to the machine internal port 80. The reading order of this command is: `<host-port>:<container-exposed-port>`. Finally, making a request to URL `http://localhost`, we will receive our "hello world" message.
+
+#### No Updates in Container
+
+Once the Container has been created, let's suppose to make a change in the source code. Restarting the Container, we expect that the changes will be propagated immediately. However, once the Container has been started successfully, there are no changes in the source code.
+
+The explanation for this "anomalous" behavior stands in the Image's build's process. Once as Image as been created, everything that has to been copied inside it, will be freezed. Therefore, if we stop and re-run again a Container based on the same Image, nothing will change.
+
+To overcome this behavior, we have to re-build our Image. Thus, re-building meas copy the new content inside the Image, and the new Containers that will be created, will be based on the updated Image.
+
+### Image's Layered Architecture
+
+Building an already existing Image, you will probably having an output from Docker, just like the figure below:
+
+<div style="width: 100%">
+    <img src="../assets/1. Images and Containers/Screenshot.png" alt="Dockerfile Image Screenshot" />
+</div>
+
+as you can notice, there are some output indicating for each command of the Dockerfile something like this: `CACHED [2/6] WORKDIR /var/www`. It seems that Docker stores each command inside an internal cache, and get the corresponding output (that is a Image's snapshot), if nothing changed from any previous build process. In a certain way, in fact, Docker creates Images in a layered way, that is: each command of the Dockerfile, corresponds to a layer, in such a way, each layer output is cached from Docker, internally, to reduce long build processes.
+
+Moreover, if something is changed from any previous Image's layer in the cache, it means that Docker must check the corresponding outer layers, if they need to be built again or it is not necessary. Then, once the Image has been built successfully, we can create a Container just adding an extra layer to those generated from the Image.
+
+<div style="width: 100%">
+    <img src="../assets/1. Images and Containers/Layered Architecture.png" alt="Dockerfile Layered Architecture" />
+</div>
+
+As we can see, each layer is represented by each Dockerfile command, and the final Container, is nothing more that the Image's layers, with the command `CMD ["npm", "run", "start"]`, that is the only one that must be executed once the Container has been created.
+
+## Image and Containers Commands
+
+In this section, we are going to see the basic command-line commands that can be use to manage Docker's Images and Containers. As you would probably notice, the commonest way to interact with Docker is by using terminal. However, there is a quite long list of commands, to remember if we would like to use Docker, and since is fundamental to know it, we will dive in these commands.
+
+In some operating system like MacOs and Window, it is possible to download and use the Docker Desktop application, where we can avoid the use of command-line commands for Docker. However, Docker Desktop is not available for all operating system, therefore, I recommend to learn the Docker instructions before.
+
+The first and most used command is `docker ps`. `ps` stands for "processors", and the command shows a list of running processors in Docker, that is: shows the list of running Containers. However, since the command shows only running Containers, to see all the Containers, both running or stopped, we have to use the `-a` flag, in the following way: `docker ps -a`. Running this command, will show a list of Containers like this:
+
+| Container | Image  | COMMAND       | CREATED            | STATUS        | PORTS                | NAMES          |
+|-----------|--------|---------------|--------------------|---------------|----------------------|----------------|
+| 172c3d1a  | a56b12 | npm run start | About a minute ago | Up 16 seconds | 0.0.0.0:80 -> 80/tcp | Container_name |
+
+now that we have a running Container, to stop it we can use the command `docker stop 172c3d1a`, where the only parameter of the command is the id of the Container.
+
+### Attached and Detached Containers
+
+There are two ways to run a Docker Container, **attached** or **detached** mode. Attached mode means that the output of the Docker Container will be show directly in the current terminal's session.
+
+However, once we start a Docker Container using the command: `docker run <container-id>`; Docker will return only the the id of the started Container, because, by default Docker starts the Container in detached mode, that is, it won't interrupt the terminal's output, showing the Container log.
+
+If we would like to run a Docker Container in attached mode, we have to use the `-a` flag. Thus, the complete command to run a Container in this mode is: `docker run -a <container-id>`; then, we can observe the Container's output directly on our terminal.
+
+In the same way, if the Container is running in background, we can enable the attach mode, and starting to observe the Container's output, using the command `docker attach <container-id>`.
+
+Sometimes, we would like just to observe the Container output, without blocking the current terminal's session. That is, we would like to show the Container's log, and inspect what is not working, for instance. The command `docker logs <container-id>`, shows us the full Container's log.
+
+### Interactive Mode
+
+In the previous sub-section, we saw how to use the attach and detach mode, to observe a Container's output. However, even in attach mode, we are just an observer without interacting with the Container itself.
+
+There is an additional mode, in addiction to attach and detach, that enables us to interact directly with the Container's console, that is the **interactive mode**. When we are creating a new Container, from an Image, we can enable the interactive mode using the command `docker run -i -t <image-id>`. The two flags: `-i` and `-t` stands for: enable interactive mode, and attach a sudo terminal through interact.
+
+However, how can we enable the interactive mode once the Container has been created? Analyzing the Docker commands' list, we can see that we can combine the attach mode of a Container, with the interactive mode, using the flags `-a` and `-i`. Therefore, by running the command: `docker start -a -i <container-id>`, we can interact with an existing Container, after that it has been created successfully.
+
+### Deleting Images and Containers
+
+Once we do not need a Container or an Image no more, we would like to delete them. Before showing the commands to use to delete an Image or a Container, please, notice that Containers cannot be removed as long as they are running; moreover, Images cannot be removed as long as they are used by a Container.
+
+After these clarifications, let's see how can we remove a Container. The basic command to know is: `docker container rm <container-id>`, that is, we can pass a single Container's id or a list of Containers ids, to be removed. However, removing all Containers passing all the ids of the stopped ones, could be a cumbersome actions. Therefore, to remove all the stopped Containers, we can simply use the command `docker container prune`.
+
+Now, removing Images can be done with the same commands, modified with the `image` prefix. Thus, the relative commands for deleting Images are: `docker Image rm <image-id>` or `docker image prune`.
+
+Alternatively, we can run a Container using the `--rm` flag, to indicate Docker to delete automatically the Container after that is has been stopped. Therefore, supposing to run a container using the command: `docker run --rm -p 80:80 <docker-image>`, after that the container will be stopped, it will be removed automatically by the Docker Engine.
+
+### Copying Files from and to a Container
+
+After that a Container has been created and is running, if we would like to copy a new file from the host machine, to the destination, we have to stop the Container and re-build the Image. Is it the only way to copy a file or a folder in a Container? No, fortunately there is a command to copy from and in a Container, a folder or a single file.
+
+The command is `docker container <source> <destination>`. You can notice that, there is no reference of a Container apparently, in fact, to specify that the source is a folder inside a Container, we have to use this syntax: `docker container <container-id>:<source-path> <destination-path>`. That is if we would like to copy a folder named test, from our machine to a Container, we have to specify the command in the following way: `docker container /test <container-id>:/`. However, notice that when we are copy files from and to a Container, the relative path to start from is the root directory.
+
+Moreover, if we would like to copy a file or a directory from the Container, inside my machine, we have to switch the commands in the following way: `docker container <container-id:/test/. /test`. That is, everything inside  `/test` inside the Container, will be copied in the `/test` directory inside the current working area.
+
+### Naming and Tagging Containers and Images
+
+Up to this moment, each command we used works only using the id of the Image or the Container. Most of the time, the auto-generated identifier are quite difficult to remember. However, there is an alternative way to create a Container or an Image, giving them a name helping us to execute further commands.
+
+Before explain how assign name to Images and Containers, we have to clarify that while Containers have a name that is a simple string. Images' name is composed of two parts: `<name>:<version>` which compose a so called **tag**. With that specification, we can create multiple Images with the same name, but having different versions, and then, the last version of our image will be named as `<name>:latest`.
+
+Now, we can assign tag to Images using the following command, during Image's building phase `docker build --tag=<image-name>:<version>`. Then, to create a Container using this specific Image and having a new name, we have to use the command: `docker run --name <container-name> <image-tag>`.
+
+Once I created an Image with a tag, should I create a new Image if I would like to give to the Image a different tag? Fortunately no, and there is a command to rename the tag of an existing Image, that is: `docker tag <old-image-tag> <new-image-tag>`.
+
+In conclusion, once we assign a tag to an Image, or a name to a Container, we have to be careful in using the command `docker image prune`, or `docker container prune`, since these commands removes Images or Containers without any name or tag, whose Images are no references by any running Container. Now, if we would like to remove a tagged Image, we have to add the `-a` flag to the Image prune command, just like this: `docker image prune -a`.
+
+## Docker Hub
+
+Finally, we arrived to the last section of this chapter. Most of the time, you will use Docker to share a common development environment between your company's colleagues, and I can ensure you that is a best practice, to avoid any unexpected behaviors during deployment. By default, Docker has an own repository where you can share Images of your application, that is the **Docker Hub**.
+
+Up to this moment, we used Docker Hub inadvertently using the command `FROM node`, in the [Dockerfile](./Dockerfile), since `node` is the name of a public Image shared in the Docker Hub (remember that, the complete name is `node:latest`, however, without any version's specification, the latest will be always pulled).
+
+Before pushing images to the Docker Hub, you have to connect to you Docker Hub account, proving you username or password. Once you have been logged in successfully, you have to create an image having whose tag satisfies the following pattern `<docker-hub-username>/<name>:<version>`. Then, once the Image has been created successfully, you can push the Image on the Docker Hub, by typing `docker push <docker-hub-username>/<name>:<version>`.
+
+Attached to the current repository, there a file named [hello-world.dockerfile](./hello-world.dockerfile), that I pushed to my own repository as a valid example. If you would like to push your first Image on your Docker account, you have to update the build command in the following name `docker build <docker-hub-username>/<name>:<version> --name=hello-world.dockerfile`.
+
+Just like pushing, you would like to pull an Image from Docker Hub or a private Docker Registry, only if you have permissions or the Image is in a public repository. To pull an Image, you have to use the command `docker pull <image-tag>`, of course, this will push an Image to the current machine, without the Dockerfile. Just like we saw in the beginning of this chapter, using `docker run <image-tag>` will download, and use the Image to create a Container.
