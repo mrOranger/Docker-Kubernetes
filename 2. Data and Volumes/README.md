@@ -45,3 +45,11 @@ docker container start data-and-volumes
 ```
 
 we can see that data inside the Container has been persisted permanently, and will be available until the Volume will be deleted. Moreover, we can see the name and type of the Volume, using the command: `docker volume ls`. Eventually, all the unused Volumes can be deleted using the command: `docker volume prune`.
+
+## Bind Mounts
+
+If you are developers, I hope you will use Docker in you development's daily tasks. However, it seems that is not easy to use, in writing code that will change often. In fact, as we saw, each time we made a change in the source code, it is necessary to re-build the Image, so that the Dockerfile can copy again the code inside the next Containers. How can we solve this problem?
+
+Docker defined __bind mounts__ to connect directly our host machine to a Container, such that, each time a change is made here, it will be reflected directly in the Container's content.
+
+To use a bind mount, we have to add another option to Docker Container's command, that is: `docker run -d -p 80:80 --name=data-and-volumes -v /var/www/documents -v <your-folder-absolute-path>:/var/www data-and-volumes`. However, once we ran this command, the Container is stopped immediately, and seems that no command defined inside [Dockerfile](./Dockerfile) has been executed.
