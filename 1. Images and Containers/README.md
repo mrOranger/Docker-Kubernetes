@@ -99,11 +99,11 @@ The flag `-p 80:80`, indicates Docker to bind the exposed port 80 of the Contain
 
 #### No Updates in Container
 
-Once the Container has been created, let's suppose to make a change in the source code. Restarting the Container, we expect that the changes will be propagated immediately. However, once the Container has been started successfully, there are no changes in the source code.
+Once the Container has been created, let's suppose to make a change in the source code. Restarting the Container, we expect that the changes will be propagated immediately. However, once the Container has been started successfully, there are no changes in the source code ...
 
 The explanation for this "anomalous" behavior stands in the Image's build's process. Once as Image as been created, everything that has to been copied inside it, will be freezed. Therefore, if we stop and re-run again a Container based on the same Image, nothing will change.
 
-To overcome this behavior, we have to re-build our Image. Thus, re-building meas copy the new content inside the Image, and the new Containers that will be created, will be based on the updated Image.
+To overcome this behavior, we have to re-build our Image. Thus, re-building meas copy the new content inside the Image, and the new Containers that will be created, will be based on the updated Image. To overcome this behavior we need to understand Volumes, that will be introduced later in this repository.
 
 ### Image's Layered Architecture
 
@@ -113,23 +113,23 @@ Building an already existing Image, you will probably having an output from Dock
     <img src="../assets/1. Images and Containers/Screenshot.png" alt="Dockerfile Image Screenshot" />
 </div>
 
-as you can notice, there are some output indicating for each command of the Dockerfile something like this: `CACHED [2/6] WORKDIR /var/www`. It seems that Docker stores each command inside an internal cache, and get the corresponding output (that is a Image's snapshot), if nothing changed from any previous build process. In a certain way, in fact, Docker creates Images in a layered way, that is: each command of the Dockerfile, corresponds to a layer, in such a way, each layer output is cached from Docker, internally, to reduce long build processes.
+as you can notice, there are some output indicating for each command of the Dockerfile something like this: `CACHED [2/6] WORKDIR /var/www`. It seems that Docker stores each command inside an internal cache, and get the corresponding output (that is the Image's snapshot) if nothing changed from any previous build process. In a certain way, Docker creates Images in a layered way, that is: each command of the Dockerfile, corresponds to a layer, in such a way, each layer output is cached from Docker internally, to reduce long build processes.
 
-Moreover, if something is changed from any previous Image's layer in the cache, it means that Docker must check the corresponding outer layers, if they need to be built again or it is not necessary. Then, once the Image has been built successfully, we can create a Container just adding an extra layer to those generated from the Image.
+Moreover, if something's changed from any previous Image's layer in the cache, it means that Docker must check the corresponding upper layers, to understand if they need to be built again or eventually it is not necessary. Then, once the Image has been built successfully, we can create a Container just adding an extra layer to those previously generated from the Image.
 
 <div style="width: 100%">
     <img src="../assets/1. Images and Containers/Layered Architecture.png" alt="Dockerfile Layered Architecture" />
 </div>
 
-As we can see, each layer is represented by each Dockerfile command, and the final Container, is nothing more that the Image's layers, with the command `CMD ["npm", "run", "start"]`, that is the only one that must be executed once the Container has been created.
+As we can see, each layer is represented by each Dockerfile command, and the final Container is nothing more that the Image's layers, with the command `CMD ["npm", "run", "start"]`, that is the only one that must be executed once the Container has been created.
 
 ## Image and Containers Commands
 
-In this section, we are going to see the basic command-line commands that can be use to manage Docker's Images and Containers. As you would probably notice, the commonest way to interact with Docker is by using terminal. However, there is a quite long list of commands, to remember if we would like to use Docker, and since is fundamental to know it, we will dive in these commands.
+In this section, we are going to see the basic command-line commands that can be use to manage Docker's Images and Containers. As you would probably notice, the commonest way to interact with Docker is by using terminal. However, there is a quite long list of commands to remember, if we would like to use Docker and since is fundamental to know them, now we will dive in these commands.
 
-In some operating system like MacOs and Window, it is possible to download and use the Docker Desktop application, where we can avoid the use of command-line commands for Docker. However, Docker Desktop is not available for all operating system, therefore, I recommend to learn the Docker instructions before.
+In some operating system like MacOS and Window, it is possible to download and use the **Docker Desktop** application, thorough we can avoid the use of command-line commands for Docker. However, Docker Desktop is not available for all operating system, therefore, I recommend to learn the Docker instructions in any way.
 
-The first and most used command is `docker ps`. `ps` stands for "processors", and the command shows a list of running processors in Docker, that is: shows the list of running Containers. However, since the command shows only running Containers, to see all the Containers, both running or stopped, we have to use the `-a` flag, in the following way: `docker ps -a`. Running this command, will show a list of Containers like this:
+The first and most used command is `docker ps`. `ps` stands for "processes", and the command shows a list of running processes in Docker, that is: shows the list of running Containers. However, since the command shows only running Containers, to see all the Containers, both running or stopped, we have to use the `-a` flag, in the following way: `docker ps -a`. Running this command, will show a list of Containers like this:
 
 | Container | Image  | COMMAND       | CREATED            | STATUS        | PORTS                | NAMES          |
 |-----------|--------|---------------|--------------------|---------------|----------------------|----------------|
@@ -139,11 +139,11 @@ now that we have a running Container, to stop it we can use the command `docker 
 
 ### Attached and Detached Containers
 
-There are two ways to run a Docker Container, **attached** or **detached** mode. Attached mode means that the output of the Docker Container will be show directly in the current terminal's session.
+There are two ways to run a Docker Container, **attached mode** or **detached mode**. Attached mode means that the output of the Docker Container will be shown directly in the current terminal's session.
 
-However, once we start a Docker Container using the command: `docker run <container-id>`; Docker will return only the the id of the started Container, because, by default Docker starts the Container in detached mode, that is, it won't interrupt the terminal's output, showing the Container log.
+However, once we start a Docker Container using the command: `docker run <container-id>`; Docker will return only the the id of the started Container, because, by default Docker starts the Container in detached mode, that is: it won't interrupt the terminal's output, showing the Container log.
 
-If we would like to run a Docker Container in attached mode, we have to use the `-a` flag. Thus, the complete command to run a Container in this mode is: `docker run -a <container-id>`; then, we can observe the Container's output directly on our terminal.
+If we would like to run a Docker Container in attached mode, we have to use the `-a` option. Thus, the complete command to run a Container in this mode is: `docker run -a <container-id>`; then, we can observe the Container's output directly on our terminal.
 
 In the same way, if the Container is running in background, we can enable the attach mode, and starting to observe the Container's output, using the command `docker attach <container-id>`.
 
@@ -153,23 +153,23 @@ Sometimes, we would like just to observe the Container output, without blocking 
 
 In the previous sub-section, we saw how to use the attach and detach mode, to observe a Container's output. However, even in attach mode, we are just an observer without interacting with the Container itself.
 
-There is an additional mode, in addiction to attach and detach, that enables us to interact directly with the Container's console, that is the **interactive mode**. When we are creating a new Container, from an Image, we can enable the interactive mode using the command `docker run -i -t <image-id>`. The two flags: `-i` and `-t` stands for: enable interactive mode, and attach a sudo terminal through interact.
+There is an additional mode, in addiction to attach and detach, that enables us to interact directly with the Container's console, that is the **interactive mode**. When we are creating a new Container, from an Image, we can enable the interactive mode using the command `docker run -i -t <image-id>`. The two options: `-i` and `-t` stands for: enable interactive mode, and attach a sudo terminal through interact. Alternatively, we can combine them in an unique option `-it`.
 
-However, how can we enable the interactive mode once the Container has been created? Analyzing the Docker commands' list, we can see that we can combine the attach mode of a Container, with the interactive mode, using the flags `-a` and `-i`. Therefore, by running the command: `docker start -a -i <container-id>`, we can interact with an existing Container, after that it has been created successfully.
+However, how can we enable the interactive mode once the Container has been created? Analyzing the Docker commands' list, we can see that we can combine the attach mode of a Container, with the interactive mode, using the options `-a` and `-i`. Therefore, by running the command: `docker start -a -i <container-id>`, we can interact with an existing Container, after that it has been created successfully.
 
 ### Deleting Images and Containers
 
-Once we do not need a Container or an Image no more, we would like to delete them. Before showing the commands to use to delete an Image or a Container, please, notice that Containers cannot be removed as long as they are running; moreover, Images cannot be removed as long as they are used by a Container.
+Once we do not need a Container or an Image no more, we would like to delete them. Before showing the commands to use to delete an Image or a Container, please, notice that Containers cannot be removed as long as they are running; Moreover, Images cannot be removed as long as they are used by a Container.
 
 After these clarifications, let's see how can we remove a Container. The basic command to know is: `docker container rm <container-id>`, that is, we can pass a single Container's id or a list of Containers ids, to be removed. However, removing all Containers passing all the ids of the stopped ones, could be a cumbersome actions. Therefore, to remove all the stopped Containers, we can simply use the command `docker container prune`.
 
-Now, removing Images can be done with the same commands, modified with the `image` prefix. Thus, the relative commands for deleting Images are: `docker Image rm <image-id>` or `docker image prune`.
+Now, removing Images can be done with the same commands, using the `image` prefix. Thus, the relative commands for deleting Images are: `docker image rm <image-id>` or `docker image prune`.
 
-Alternatively, we can run a Container using the `--rm` flag, to indicate Docker to delete automatically the Container after that is has been stopped. Therefore, supposing to run a container using the command: `docker run --rm -p 80:80 <docker-image>`, after that the container will be stopped, it will be removed automatically by the Docker Engine.
+Alternatively, we can run a Container using the `--rm` option, to indicate Docker to delete automatically the Container after that is has been stopped. Therefore, supposing to run a container using the command: `docker run --rm -p 80:80 <docker-image>`, after that the container will be stopped, it will be removed automatically by the Docker Engine.
 
 ### Copying Files from and to a Container
 
-After that a Container has been created and is running, if we would like to copy a new file from the host machine, to the destination, we have to stop the Container and re-build the Image. Is it the only way to copy a file or a folder in a Container? No, fortunately there is a command to copy from and in a Container, a folder or a single file.
+After that a Container has been created and is running, if we would like to copy a new file from the host machine to the destination, thus we have to stop the Container and re-build the Image. Is it the only way to copy a file or a folder in a Container? No, fortunately there is a command to copy from and in a Container a folder or a single file.
 
 The command is `docker container <source> <destination>`. You can notice that, there is no reference of a Container apparently, in fact, to specify that the source is a folder inside a Container, we have to use this syntax: `docker container <container-id>:<source-path> <destination-path>`. That is if we would like to copy a folder named test, from our machine to a Container, we have to specify the command in the following way: `docker container /test <container-id>:/`. However, notice that when we are copy files from and to a Container, the relative path to start from is the root directory.
 
@@ -177,23 +177,23 @@ Moreover, if we would like to copy a file or a directory from the Container, ins
 
 ### Naming and Tagging Containers and Images
 
-Up to this moment, each command we used works only using the id of the Image or the Container. Most of the time, the auto-generated identifier are quite difficult to remember. However, there is an alternative way to create a Container or an Image, giving them a name helping us to execute further commands.
+Up to this moment, each command we used works only using the id of the Image or the Container. Most of the time, the auto-generated identifiers are quite difficult to remember. However, there is an alternative way to create a Container or an Image, giving them a name helping us to execute further commands.
 
-Before explain how assign name to Images and Containers, we have to clarify that while Containers have a name that is a simple string. Images' name is composed of two parts: `<name>:<version>` which compose a so called **tag**. With that specification, we can create multiple Images with the same name, but having different versions, and then, the last version of our image will be named as `<name>:latest`.
+Before explain how assign name to Images and Containers, we have to clarify that while Containers have a name that is a simple string. Images' name is composed of two parts: `<name>:<version>`, which composes a so called **tag**. With that specification, we can create multiple Images with the same name, but having different versions, and then, the last version of our image will be named as `<name>:latest`.
 
 Now, we can assign tag to Images using the following command, during Image's building phase `docker build --tag=<image-name>:<version>`. Then, to create a Container using this specific Image and having a new name, we have to use the command: `docker run --name <container-name> <image-tag>`.
 
 Once I created an Image with a tag, should I create a new Image if I would like to give to the Image a different tag? Fortunately no, and there is a command to rename the tag of an existing Image, that is: `docker tag <old-image-tag> <new-image-tag>`.
 
-In conclusion, once we assign a tag to an Image, or a name to a Container, we have to be careful in using the command `docker image prune`, or `docker container prune`, since these commands removes Images or Containers without any name or tag, whose Images are no references by any running Container. Now, if we would like to remove a tagged Image, we have to add the `-a` flag to the Image prune command, just like this: `docker image prune -a`.
+In conclusion, once we assign a tag to an Image, or a name to a Container, we have to be careful in using the command `docker image prune`, or `docker container prune`, since these commands remove Images or Containers without any name or tag; moreover, to be removed with this command, Images must not be used by any Container. Now, if we would like to remove a tagged Image, we have to add the `-a` option to the Image prune command, just like this: `docker image prune -a`.
 
 ## Docker Hub
 
-Finally, we arrived to the last section of this chapter. Most of the time, you will use Docker to share a common development environment between your company's colleagues, and I can ensure you that is a best practice, to avoid any unexpected behaviors during deployment. By default, Docker has an own repository where you can share Images of your application, that is the **Docker Hub**.
+Finally, we arrived to the last section of this chapter. Most of the time, you will use Docker to share a common development environment between your company's colleagues, and I can ensure you that is a best practice avoiding any unexpected behaviors during deployment. By default, Docker has an own repository where you can share Images of your application, that is the **Docker Hub**.
 
 Up to this moment, we used Docker Hub inadvertently using the command `FROM node`, in the [Dockerfile](./Dockerfile), since `node` is the name of a public Image shared in the Docker Hub (remember that, the complete name is `node:latest`, however, without any version's specification, the latest will be always pulled).
 
-Before pushing images to the Docker Hub, you have to connect to you Docker Hub account, proving you username or password. Once you have been logged in successfully, you have to create an image having whose tag satisfies the following pattern `<docker-hub-username>/<name>:<version>`. Then, once the Image has been created successfully, you can push the Image on the Docker Hub, by typing `docker push <docker-hub-username>/<name>:<version>`.
+Before pushing images to the Docker Hub, you have to connect to you Docker Hub account, proving you username or password. Once you have been logged in successfully, you have to create an Image having whose tag satisfies the following pattern `<docker-hub-username>/<name>:<version>`. Then, once the Image has been created successfully, you can push the Image on the Docker Hub, by typing `docker push <docker-hub-username>/<name>:<version>`.
 
 Attached to the current repository, there a file named [hello-world.dockerfile](./hello-world.dockerfile), that I pushed to my own repository as a valid example. If you would like to push your first Image on your Docker account, you have to update the build command in the following name `docker build <docker-hub-username>/<name>:<version> --name=hello-world.dockerfile`.
 
