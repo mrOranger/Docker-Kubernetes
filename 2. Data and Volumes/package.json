@@ -1,0 +1,26 @@
+{
+    "name": "2.-data-and-volumes",
+    "version": "1.0.0",
+    "description": "In the previous chapter, we saw how to copy files and folders from and to a Container, using the command `docker cp <container-id>:<source-file> <destination-folder>`. However, in real application development, it is not acceptable to execute this command, each time a change on a file has been made.",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "github.com/mroranger/Docker-Kubernetes"
+    },
+    "keywords": [
+        "Docker",
+        "Node"
+    ],
+    "author": "mroranger",
+    "license": "ISC",
+    "dependencies": {
+        "dotenv": "^16.5.0",
+        "express": "^5.1.0"
+    },
+    "devDependencies": {
+        "@types/express": "^5.0.2"
+    }
+}
