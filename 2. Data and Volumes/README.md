@@ -53,3 +53,9 @@ If you are developers, I hope you will use Docker in you development's daily tas
 Docker defined __bind mounts__ to connect directly our host machine to a Container, such that, each time a change is made here, it will be reflected directly in the Container's content.
 
 To use a bind mount, we have to add another option to Docker Container's command, that is: `docker run -d -p 80:80 --name=data-and-volumes -v /var/www/documents -v <your-folder-absolute-path>:/var/www data-and-volumes`. However, once we ran this command, the Container is stopped immediately, and seems that no command defined inside [Dockerfile](./Dockerfile) has been executed.
+
+The explanation to this "strange" behavior stands in how Docker manages bind mounts. When we indicate to Docker that there is a bind mount, connecting the data from our host machine to a Docker Container, we are telling to Docker: "hey, copy the content from the host machine, and overwrite the Container's content". Event though in the Dockerfile there are instructions like `RUN npm install` that creates a `node_module` folder.
+
+Therefore, we have to indicate Docker that the folder `node_module` must not be overwritten, when we are using bind mounts. There are two ways to achieve this: add `VOLUME ["/www/var/node_modules"]` inside the Dockerfile, or using another flag `-v /var/www/node_modules` in the Container's executions' script (of course, the first path needs that the Image must be re-build).
+
+In both cases, we are creating an anonymous Volume, where the content of the `/var/www/node_module` will be store. Moreover, once the container will be removed, the Volume will be removed too.

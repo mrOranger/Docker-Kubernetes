@@ -12,4 +12,6 @@ COPY .env .
 
 EXPOSE 80
 
+VOLUME ["/var/www/node_modules"]
+
 CMD ["npm", "run", "start"]
