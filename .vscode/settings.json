@@ -1,5 +1,5 @@
 {
-    "editor.fontFamily": "FiraCode Nerd Font Propo",
+    "editor.fontFamily": "Fira Code",
     "editor.fontSize": 20,
     "editor.indentSize": "tabSize",
     "editor.insertSpaces": true,
@@ -9,14 +9,18 @@
     "[json]": {
         "editor.autoIndent": "keep",
         "editor.formatOnSave": true,
+        "editor.maxTokenizationLineLength": 120,
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "[javascript]": {
         "editor.formatOnSave": true,
-        "editor.maxTokenizationLineLength": 2500,
+        "editor.maxTokenizationLineLength": 120,
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "[yaml]": {
-        "editor.autoIndent": "keep"
+        "editor.autoIndent": "keep",
+        "editor.formatOnSave": true,
+        "editor.maxTokenizationLineLength": 120,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
     }
 }
