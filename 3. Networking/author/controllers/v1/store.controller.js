@@ -1,23 +1,18 @@
-import fs from 'fs';
-import path from 'path';
-
-import { Author } from '../../models/v1/index.js';
-
 export function store(request, response) {
-    const { taxCode, firstName, lastName } = request.body;
+    const { DATABASE_URL, DATABASE_PORT, DATABASE_BASE_PATH } = process.env;
 
-    const folderPath = '/var/www/database/v1';
-    const filePath = path.join(folderPath, taxCode);
+    const PATH = `${DATABASE_URL}:${DATABASE_PORT}/${DATABASE_BASE_PATH}`;
 
-    const author = new Author({ taxCode, firstName, lastName });
+    const options = {
+        method: 'POST',
+        body: JSON.stringify(request.body),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    };
 
-    try {
-        fs.writeFileSync(filePath, author.toString());
-
-        return response.status(201).json({ data: author });
-    } catch (exception) {
-        console.error(exception);
-
-        return response.status(500).json({ message: 'Error.' });
-    }
+    fetch(`${PATH}`, options)
+        .then((response) => response.json())
+        .then((result) => response.status(200).json(result))
+        .catch((result) => response.status(500).json(result));
 }

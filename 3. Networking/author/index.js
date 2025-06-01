@@ -3,7 +3,7 @@ import express from 'express';
 import { router } from './routes/v1/index.js';
 
 const application = express();
-const { PORT = 80, NAME = 'networking/author' } = process.env;
+const { PORT = 80, NAME = 'author' } = process.env;
 
 application.use(express.json());
 application.use(express.urlencoded({ extended: true }));

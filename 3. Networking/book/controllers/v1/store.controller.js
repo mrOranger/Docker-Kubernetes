@@ -1,22 +1,18 @@
-import fs from 'fs';
-import path from 'path';
-import { v6 as uuid } from 'uuid';
-
-import { Book } from '../../models/v1/index.js';
-
 export function store(request, response) {
-    const { title, year, authorId } = request.body;
-    const newBook = new Book({ id: uuid(), title, year, authorId });
-    const folderPath = '/var/www/database/v1';
-    const filePath = path.join(folderPath, newBook.id);
+    const { DATABASE_URL, DATABASE_PORT, DATABASE_BASE_PATH } = process.env;
 
-    try {
-        fs.writeFileSync(filePath, newBook.toString());
+    const PATH = `${DATABASE_URL}:${DATABASE_PORT}/${DATABASE_BASE_PATH}`;
 
-        return response.status(201).json({ data: newBook });
-    } catch (exception) {
-        console.error(exception);
+    const options = {
+        method: 'POST',
+        body: JSON.stringify(request.body),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    };
 
-        return response.status(500).json({ message: 'Error.' });
-    }
+    fetch(`${PATH}`, options)
+        .then((response) => response.json())
+        .then((result) => response.status(200).json(result))
+        .catch((result) => response.status(500).json(result));
 }

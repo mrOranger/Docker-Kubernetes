@@ -1,30 +1,11 @@
-import fs from 'fs';
-import path from 'path';
-
-import { Book } from '../../models/v1/index.js';
-
 export function index(_, response) {
-    const books = [];
-    const folderPath = '/var/www/database/v1';
+    const { DATABASE_URL, DATABASE_PORT, DATABASE_BASE_PATH } = process.env;
 
-    try {
-        const files = fs.readdirSync(folderPath);
+    const PATH = `${DATABASE_URL}:${DATABASE_PORT}/${DATABASE_BASE_PATH}`;
 
-        for (const file of files) {
-            const filePath = path.join(folderPath, file);
-            const fileStatus = fs.statSync(filePath);
-
-            if (fileStatus.isFile()) {
-                const fileContent = fs.readFileSync(filePath, 'utf-8');
-                const book = new Book(JSON.parse(fileContent));
-
-                books.push(book);
-            }
-        }
-
-        return response.status(200).json({ data: books });
-    } catch (exception) {
-        console.error(exception);
-        return response.status(500).json({ data: 'Error.' });
-    }
+    fetch(`${PATH}`)
+        .then((response) => response.json())
+        .then((result) => response.status(200).json(result))
+        .catch((result) => console.log(result))
+        .finally((result) => response.status(500).json(result));
 }
