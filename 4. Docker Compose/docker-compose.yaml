@@ -1,29 +1,42 @@
 version: "3.8"
+name: docker-compose
 
 services:
     author:
+        container_name: author
         build:
             context: ./author
             dockerfile: author.dockerfile
+        ports:
+            - 8000:80
         volumes:
             - author-node-modules:/var/www/node_modules
         env_file:
             - ./author/.env
         networks:
             - docker-network
+        depends_on:
+            - book
+            - database
 
     book:
+        container_name: book
         build:
             context: ./book
             dockerfile: book.dockerfile
+        ports:
+            - 8001:80
         volumes:
             - book-node-modules:/var/www/node_modules
         env_file:
             - ./book/.env
         networks:
             - docker-network
+        depends_on:
+            - database
 
     database:
+        container_name: database
         build:
             context: ./database
             dockerfile: database.dockerfile

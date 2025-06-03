@@ -69,10 +69,10 @@ We just created the Service named 'author', however, we have to specify that the
 
 ```docker-compose
 services:
-    author:
+    <service-name>:
         build:
-            dockerfile: author.dockerfile
-            context: ./author
+            dockerfile: <docker-file-name>
+            context: <docker-file-path>
 ```
 
 using `build` we are indicating to Docker the instructions where to find the Dockerfile to create the Image. Thus `dockerfile` is used to specify the name of the Dockerfile to use; while `context` indicates there to find that Dockerfile.
@@ -83,7 +83,7 @@ Now that we indicated the Dockerfile to use to create the Image, we have to deal
 
 ```docker-compose
 volumes:
-    - author-node-modules:/var/www/node_modules
+    - <volume-name>:<volume-path>
 ```
 
 Just like the `--volume` option in the `docker run` command, we can specify the type of volume using a semi-column after the folder inside the Volume. Moreover, notice that we specified each Volume using the `-` just like a list. Sometimes, in Docker Compose you will use this syntax, while sometimes not. It is necessary to use this syntax, when we are dealing with lists of single values. On the other hand, if we specify a list of values like `<key>: <value>`, we do not need to place the `-` in the beginning of each item.
@@ -140,3 +140,56 @@ networks:
 ```
 
 Alternatively, you can avoid the use of `driver` keyword, if you would like to use the default driver. Moreover, you have to specify the name of the network with the semi-columns, since it is a Docker Compose convention.
+
+### Publish a Port with `ports`
+
+We configured the Volumes and the Network, however, up to this moment we are not able to communicate from our host machine to the Services, because we did not exposed any internal port. As we saw in the starting command, we used the command `p=<host-port>:<container-port>` to expose a Container's port to the host machine. In the same way, we can use the `ports` option, to bind a port from the Service to the host machine:
+
+```docker-compose
+services:
+    <service-name>:
+        ports:
+            - <host-port>:<container-port>
+```
+
+Moreover, now we can understand the usefulness of the `EXPOSE` keyword in the Dockerfile. In fact, if we did not have any reminder about the exposed port of the Container, it is useful to have a look inside its Dockerfile, before starting to write the Docker Compose configuration's file.
+
+### Starting Order
+
+Most of the time, we have to define a starting order between the Services, such that a Service must be started only after another has been started. Just like in real-context application, we would like to start a backend application, only once the database has been successfully started.
+
+Defining an order between the services can be done using the `depends_on` label:
+
+```docker-compose
+services:
+    <service-A>:
+        depends_on:
+            - <service-B>
+    <service-B>:
+        ports:
+            - <host-port>:<container-port>
+```
+
+That is, in this shorter example, the Service A must be started only once the Service B has been started successfully, even though the Service A is defined before the Service B in the Docker Compose file. Moreover, as you can see, a Service can depends on a set of Services, not only by once.
+
+### Start Docker Services
+
+Once our Docker Compose's configuration file is completed, we can proceed to start each Service by using the command `docker compose up`. However, using only this command will start the Services in attached mode. On the other hand, if we would like to start each Service in detached mode, we have to attach the `-d` option to the command.
+
+```docker-compose
+docker compose up -d
+```
+
+Shutting down the Services requires to use `docker compose down`. However, the Volumes won't be removed, since it is required another option that is `-v`, to indicate to delete all the Volumes attached to the Services.
+
+```docker-compose
+docker compose down -v
+```
+
+### Naming in Docker Compose
+
+After that the Services has been started successfully, you would probably notice that the generated Containers have a quite strange name. The reason is that in Docker Compose file we assigned names only to Services, not to Container.
+
+To assign a name to a Container created using the Docker Compose, we have to use the `container_name` label, for each Service that we defined. Of course we cannot assign the same name to different Containers, otherwise an error will be thrown by the Docker Compose.
+
+However, if the name assigned to Containers from Docker are random values. How can the Container still works if we used a different name for the communication between Containers? The reason is that, for Network's internal communication in Docker Compose, specify the name of the Service is enough to Docker to understand which one is the destination Container.
