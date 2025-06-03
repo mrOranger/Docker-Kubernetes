@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+    author:
+        build:
+            context: ./author
+            dockerfile: author.dockerfile
+        volumes:
+            - author-node-modules:/var/www/node_modules
+        env_file:
+            - ./author/.env
+        networks:
+            - docker-network
+
+    book:
+        build:
+            context: ./book
+            dockerfile: book.dockerfile
+        volumes:
+            - book-node-modules:/var/www/node_modules
+        env_file:
+            - ./book/.env
+        networks:
+            - docker-network
+
+    database:
+        build:
+            context: ./database
+            dockerfile: database.dockerfile
+        volumes:
+            - database-book:/var/www/book
+            - database-author:/var/www/author
+            - database-node-modules:/var/www/node_modules
+        env_file:
+            - ./database/.env
+        networks:
+            - docker-network
+
+networks:
+    docker-network:
+        driver: bridge
+
+volumes:
+    author-node-modules:
+    book-node-modules:
+    database-author:
+    database-book:
+    database-node-modules:

@@ -1,0 +1,36 @@
+{
+    "name": "docker-kubernetes-networking-book",
+    "version": "1.0.0",
+    "description": "Database REST API for networking section of Docker Repository",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "start": "node index.js",
+        "start:dev": "nodemon --watch /var/www index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/mrOranger/Docker-Kubernetes.git"
+    },
+    "keywords": [
+        "Docker",
+        "JavaScript",
+        "Node.js",
+        "Express",
+        "REST",
+        "API"
+    ],
+    "author": "mrOranger (Edoardo Oranger)",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/mrOranger/Docker-Kubernetes/issues"
+    },
+    "homepage": "https://github.com/mrOranger/Docker-Kubernetes#readme",
+    "dependencies": {
+        "express": "^5.1.0",
+        "uuid": "^11.1.0"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.10"
+    }
+}
