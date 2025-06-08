@@ -1,0 +1,54 @@
+version: '3.8'
+name: databases
+
+services:
+    professors:
+        container_name: professors
+        build:
+            context: ./professor
+            dockerfile: database.dockerfile
+        ports:
+            - 3000:3306
+        env_file:
+            - ./professor/.env
+        networks:
+            - database-network
+        volumes:
+            - database-professor-volume:/var/lib/mysql
+
+    courses:
+        container_name: courses
+        build:
+            context: ./course
+            dockerfile: database.dockerfile
+        ports:
+            - 3001:3306
+        env_file:
+            - ./course/.env
+        networks:
+            - database-network
+        volumes:
+            - database-course-volume:/var/lib/mysql
+
+    students:
+        container_name: students
+        build:
+            context: ./student
+            dockerfile: database.dockerfile
+        ports:
+            - 3002:3306
+        env_file:
+            - ./student/.env
+        networks:
+            - database-network
+        volumes:
+            - database-student-volume:/var/lib/mysql
+
+networks:
+    database-network:
+        driver: bridge
+
+volumes:
+    database-professor-volume:
+    database-course-volume:
+    database-student-volume:

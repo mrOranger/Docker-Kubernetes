@@ -26,21 +26,29 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "[yaml]": {
+        "editor.tabSize": 4,
         "editor.autoIndent": "keep",
         "editor.formatOnSave": true,
+        "editor.indentSize": "tabSize",
+        "editor.guides.indentation": false,
         "editor.maxTokenizationLineLength": 120,
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "[dockerfile]": {
         "editor.maxTokenizationLineLength": 120,
         "editor.formatOnSave": true,
-        "editor.defaultFormatter": "docker.docker",
+        "editor.defaultFormatter": "docker.docker"
     },
     "[dockercompose]": {
         "editor.tabSize": 4,
         "editor.insertSpaces": true,
         "editor.autoIndent": "advanced",
         "editor.formatOnPaste": true,
-        "editor.defaultFormatter": "docker.docker",
+        "editor.defaultFormatter": "docker.docker"
+    },
+    "[sql]": {
+        "editor.tabSize": 4,
+        "editor.autoIndent": "advanced",
+        "editor.formatOnPaste": true
     }
 }
