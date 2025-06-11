@@ -1,0 +1,51 @@
+version: '3.8'
+name: course-management
+
+services:
+    cache:
+        image: redis
+        container_name: cache
+        ports:
+            - 6000:6379
+        networks:
+            - course-management-network
+
+    students-database:
+        container_name: students-database
+        build:
+            context: ./databases/student
+            dockerfile: database.dockerfile
+        env_file:
+            - ./databases/student/.env
+        ports:
+            - 3000:3306
+        networks:
+            - course-management-network
+        volumes:
+            - database-student-volume:/var/lib/mysql
+
+    students-service:
+        container_name: students-service
+        build:
+            context: ./services/student
+            dockerfile: development.dockerfile
+        ports:
+            - 8000:80
+        env_file:
+            - ./services/student/.env
+        networks:
+            - course-management-network
+        volumes:
+            - ./services/student:/var/www
+            - students-node-module:/var/www/node_modules
+        depends_on:
+            - students-database
+            - cache
+
+networks:
+    course-management-network:
+        driver: bridge
+
+volumes:
+    students-node-module:
+    database-student-volume:

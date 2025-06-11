@@ -1,0 +1,25 @@
+version: '3.8'
+name: course-management
+
+services:
+    students-service:
+        container_name: students-service
+        build:
+            context: ./student
+            dockerfile: development.dockerfile
+        ports:
+            - 8000:80
+        env_file:
+            - ./student/.env
+        networks:
+            - course-management-network
+        volumes:
+            - ./student:/var/www
+            - students-node-module:/var/www/node_modules
+
+networks:
+    course-management-network:
+        driver: bridge
+
+volumes:
+    students-node-module:

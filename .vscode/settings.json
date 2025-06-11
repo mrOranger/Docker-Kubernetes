@@ -30,7 +30,7 @@
         "editor.autoIndent": "keep",
         "editor.formatOnSave": true,
         "editor.indentSize": "tabSize",
-        "editor.guides.indentation": false,
+        "editor.guides.indentation": true,
         "editor.maxTokenizationLineLength": 120,
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },

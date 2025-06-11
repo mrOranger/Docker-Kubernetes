@@ -75,30 +75,3 @@ CREATE TABLE freelancers (
 
 ALTER TABLE freelancers
 ADD CONSTRAINT fk_freelancer_tax_code FOREIGN KEY (tax_code) REFERENCES students (tax_code) ON DELETE CASCADE;
-
-DELIMITER $
-
-CREATE PROCEDURE select_students()
-BEGIN
-    SELECT * FROM students
-        JOIN addresses ON students.address_id = addresses.id
-        JOIN phones ON students.phone_id = phones.id;
-END$
-
-CREATE PROCEDURE select_employees()
-BEGIN
-    SELECT * FROM employees
-        JOIN students ON students.tax_code = employees.tax_code
-        JOIN addresses ON students.address_id = addresses.id
-        JOIN phones ON students.phone_id = phones.id;
-END$
-
-CREATE PROCEDURE select_freelancers()
-BEGIN
-    SELECT * FROM freelancers
-        JOIN students ON students.tax_code = freelancers.tax_code
-        JOIN addresses ON students.address_id = addresses.id
-        JOIN phones ON students.phone_id = phones.id;
-END$
-
-DELIMITER;

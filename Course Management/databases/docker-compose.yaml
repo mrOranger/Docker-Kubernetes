@@ -1,5 +1,5 @@
 version: '3.8'
-name: databases
+name: course-management-databases
 
 services:
     professors:
@@ -12,7 +12,7 @@ services:
         env_file:
             - ./professor/.env
         networks:
-            - database-network
+            - course-management-network
         volumes:
             - database-professor-volume:/var/lib/mysql
 
@@ -26,7 +26,7 @@ services:
         env_file:
             - ./course/.env
         networks:
-            - database-network
+            - course-management-network
         volumes:
             - database-course-volume:/var/lib/mysql
 
@@ -40,12 +40,12 @@ services:
         env_file:
             - ./student/.env
         networks:
-            - database-network
+            - course-management-network
         volumes:
             - database-student-volume:/var/lib/mysql
 
 networks:
-    database-network:
+    course-management-network:
         driver: bridge
 
 volumes:
