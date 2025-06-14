@@ -1,4 +1,6 @@
-export interface Student {
+import { RowDataPacket } from 'mysql2';
+
+export interface Student extends RowDataPacket {
     tax_code: string;
     first_name: string;
     last_name: string;

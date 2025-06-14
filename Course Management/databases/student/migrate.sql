@@ -75,3 +75,37 @@ CREATE TABLE freelancers (
 
 ALTER TABLE freelancers
 ADD CONSTRAINT fk_freelancer_tax_code FOREIGN KEY (tax_code) REFERENCES students (tax_code) ON DELETE CASCADE;
+
+DELIMITER %
+
+CREATE PROCEDURE select_students ()
+BEGIN
+    SELECT * FROM students;
+END%
+
+CREATE PROCEDURE select_student (tax_code VARCHAR(50))
+BEGIN
+    SELECT * FROM students
+        WHERE students.tax_code = tax_code;
+END%
+
+CREATE PROCEDURE insert_student (tax_code VARCHAR(50), first_name VARCHAR(50), last_name VARCHAR(50))
+BEGIN
+    INSERT INTO students (tax_code, first_name, last_name, created_at)
+    VALUES (tax_code, first_name, last_name, CURRENT_TIMESTAMP())
+END%
+
+CREATE PROCEDURE update_student ( tax_code VARCHAR(50), new_first_name VARCHAR(50), new_last_name VARCHAR(50) )
+BEGIN
+    UPDATE students
+        SET first_name = new_first_name,
+            last_name = new_last_name
+        WHERE students.tax_code = tax_code;
+END%
+
+CREATE PROCEDURE delete_student ( tax_code varchar(50))
+BEGIN
+    DELETE FROM students WHERE students.tax_code = tax_code;
+END%
+
+DELIMITER ;

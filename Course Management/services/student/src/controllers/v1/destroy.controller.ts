@@ -4,18 +4,20 @@ import { concatMap, of, tap } from 'rxjs';
 
 import { StudentService } from '../../services/v1/student.service';
 
-export function index(request: Request, response: Response) {
+export function destroy(request: Request, response: Response) {
     const service = new StudentService();
+    const { id } = request.params;
 
     const { CACHE_PORT = '6379', CACHE_HOST = 'cache' } = process.env;
 
     const redis = new Redis(parseInt(CACHE_PORT), CACHE_HOST);
 
     service
-        .index()
+        .delete(id)
         .pipe(
-            concatMap((students) => of({ data: students })),
-            tap((resource) => redis.set('students', JSON.stringify(resource)))
+            concatMap((student) => of({ data: { id } })),
+            tap(() => redis.del(`student-${id}`)),
+            tap(() => redis.del(`students`))
         )
         .subscribe({
             next: (resource) => response.status(200).json(resource),

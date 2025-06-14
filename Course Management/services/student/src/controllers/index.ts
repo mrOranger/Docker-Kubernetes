@@ -1,1 +1,1 @@
-export * from './v1';
+export { index, save } from './v1';

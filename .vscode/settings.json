@@ -1,19 +1,20 @@
 {
     "editor.fontFamily": "MonoLisa Nerd Font Mono",
-    "editor.fontSize": 18,
+    "editor.fontSize": 15,
     "editor.formatOnSave": true,
     "editor.indentSize": "tabSize",
     "editor.insertSpaces": true,
-    "editor.lineHeight": 30,
+    "editor.lineHeight": 25,
     "editor.fontLigatures": true,
     "editor.fontVariations": true,
     "editor.guides.indentation": true,
-    "editor.guides.bracketPairs": "active",
-    "editor.guides.bracketPairsHorizontal": "active",
+    "editor.guides.bracketPairs": true,
     "editor.guides.highlightActiveBracketPair": true,
-    "editor.guides.highlightActiveIndentation": "always",
-    "editor.codeLens": false,
+    "editor.guides.highlightActiveIndentation": true,
+    "editor.codeLens": true,
     "editor.inlayHints.enabled": "off",
+    "workbench.sideBar.location": "right",
+    "window.zoomLevel": 1,
     "[json]": {
         "editor.autoIndent": "keep",
         "editor.formatOnSave": true,
@@ -50,5 +51,10 @@
         "editor.tabSize": 4,
         "editor.autoIndent": "advanced",
         "editor.formatOnPaste": true
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        "editor.codeActions.triggerOnFocusChange": true
     }
 }

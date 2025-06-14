@@ -1,10 +1,18 @@
-import { RequestHandler, Router } from 'express';
+import { Router } from 'express';
 
-import { index } from '../../controllers';
-import { students } from '../../middlewares';
+import { student, students } from '../../middlewares';
+import { index } from '../../controllers/v1/index.controller';
+import { save } from '../../controllers/v1/save.controller';
+import { find } from '../../controllers/v1/find.controller';
+import { update } from '../../controllers/v1/update.controller';
+import { destroy } from '../../controllers/v1/destroy.controller';
 
 const studentRouter = Router();
 
-studentRouter.get('/', (students as RequestHandler), (index as RequestHandler));
+studentRouter.get('/', students, index);
+studentRouter.get('/:id', student, find);
+studentRouter.post('/', save);
+studentRouter.put('/:id', update);
+studentRouter.delete('/:id', destroy);
 
 export { studentRouter };

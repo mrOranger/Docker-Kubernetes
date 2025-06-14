@@ -15,7 +15,8 @@
         "allowJs": false,
         "noImplicitAny": true,
         "paths": {
-            "@course-management/controllers/*": ["controllers/*"]
+            "@course-management/controllers/*": ["controllers/*"],
+            "@course-management/middlewares/*": ["middlewares/*"]
         }
     },
     "include": ["src/**/*"],

@@ -2,7 +2,7 @@ version: '3.8'
 name: course-management-databases
 
 services:
-    professors:
+    professors-database:
         container_name: professors
         build:
             context: ./professor
@@ -16,7 +16,7 @@ services:
         volumes:
             - database-professor-volume:/var/lib/mysql
 
-    courses:
+    courses-database:
         container_name: courses
         build:
             context: ./course
@@ -30,7 +30,7 @@ services:
         volumes:
             - database-course-volume:/var/lib/mysql
 
-    students:
+    students-database:
         container_name: students
         build:
             context: ./student

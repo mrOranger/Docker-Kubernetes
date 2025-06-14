@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import Redis from 'ioredis';
 
-export function students(
+export function student(
     request: Request,
     response: Response,
     next: NextFunction
@@ -11,8 +11,10 @@ export function students(
 
     const redis = new Redis(parseInt(CACHE_PORT), CACHE_HOST);
 
+    const { id } = request.params;
+
     redis
-        .get('students')
+        .get(`student-${id}`)
         .then((result) => {
             if (result) {
                 return response.json(JSON.parse(result));

@@ -10,22 +10,22 @@ services:
         networks:
             - course-management-network
 
-    students-database:
-        container_name: students-database
+    student-database:
+        container_name: student-database
         build:
             context: ./databases/student
             dockerfile: database.dockerfile
+        ports:
+            - 3002:3306
         env_file:
             - ./databases/student/.env
-        ports:
-            - 3000:3306
         networks:
             - course-management-network
         volumes:
             - database-student-volume:/var/lib/mysql
 
-    students-service:
-        container_name: students-service
+    student-service:
+        container_name: student-service
         build:
             context: ./services/student
             dockerfile: development.dockerfile
@@ -39,9 +39,8 @@ services:
             - ./services/student:/var/www
             - students-node-module:/var/www/node_modules
         depends_on:
-            - students-database
             - cache
-
+            - student-database
 networks:
     course-management-network:
         driver: bridge
