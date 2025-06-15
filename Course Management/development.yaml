@@ -10,13 +10,77 @@ services:
         networks:
             - course-management-network
 
+    course-service:
+        container_name: course-service
+        build:
+            context: ./services/course
+            dockerfile: development.dockerfile
+        ports:
+            - 8002:80
+        env_file:
+            - ./services/course/.env
+        networks:
+            - course-management-network
+        volumes:
+            - ./services/course:/var/www
+            - courses-node-module:/var/www/node_modules
+        depends_on:
+            - cache
+            - course-database
+
+    course-database:
+        container_name: course-database
+        build:
+            context: ./databases/course
+            dockerfile: database.dockerfile
+        ports:
+            - 3002:3306
+        env_file:
+            - ./databases/course/.env
+        networks:
+            - course-management-network
+        volumes:
+            - database-course-volume:/var/lib/mysql
+
+    professor-database:
+        container_name: professor-database
+        build:
+            context: ./databases/professor
+            dockerfile: database.dockerfile
+        ports:
+            - 3001:3306
+        env_file:
+            - ./databases/professor/.env
+        networks:
+            - course-management-network
+        volumes:
+            - database-professor-volume:/var/lib/mysql
+
+    professor-service:
+        container_name: professor-service
+        build:
+            context: ./services/professor
+            dockerfile: development.dockerfile
+        ports:
+            - 8001:80
+        env_file:
+            - ./services/professor/.env
+        networks:
+            - course-management-network
+        volumes:
+            - ./services/professor:/var/www
+            - professors-node-module:/var/www/node_modules
+        depends_on:
+            - cache
+            - professor-database
+
     student-database:
         container_name: student-database
         build:
             context: ./databases/student
             dockerfile: database.dockerfile
         ports:
-            - 3002:3306
+            - 3000:3306
         env_file:
             - ./databases/student/.env
         networks:
@@ -41,10 +105,15 @@ services:
         depends_on:
             - cache
             - student-database
+
 networks:
     course-management-network:
         driver: bridge
 
 volumes:
+    courses-node-module:
     students-node-module:
+    professors-node-module:
+    database-course-volume:
     database-student-volume:
+    database-professor-volume:

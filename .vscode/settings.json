@@ -49,8 +49,14 @@
     },
     "[sql]": {
         "editor.tabSize": 4,
-        "editor.autoIndent": "advanced",
-        "editor.formatOnPaste": true
+        "editor.fontLigatures": false,
+        "editor.fontSize": 18,
+        "editor.lineHeight": 30,
+        "editor.autoIndent": "brackets",
+        "editor.formatOnPaste": true,
+        "editor.formatOnSave": true,
+        "editor.fontFamily": "PT Mono",
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "[typescript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode",

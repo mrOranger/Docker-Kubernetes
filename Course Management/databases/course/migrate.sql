@@ -75,3 +75,28 @@ ADD CONSTRAINT fk_ending_slot_id FOREIGN KEY (ending_slot_id) REFERENCES time_sl
 
 ALTER TABLE lessons
 ADD CONSTRAINT fk_starting_slot_id FOREIGN KEY (starting_slot_id) REFERENCES time_slots (id) ON DELETE SET NULL;
+
+DELIMITER %
+
+CREATE PROCEDURE select_courses()
+BEGIN
+
+    SELECT courses.*
+    FROM courses
+    JOIN courses_types ON courses_types.id = courses.course_type_id
+    JOIN editions ON editions.code = courses.edition_code;
+
+END%
+
+CREATE PROCEDURE select_course ( course_code CHAR(36) )
+BEGIN
+
+    SELECT courses.*
+    FROM courses
+    JOIN courses_types ON courses_types.id = courses.course_type_id
+    JOIN editions ON editions.code = courses.edition_code;
+    WHERE courses.code = course_code;
+
+END%
+
+DELIMITER ;

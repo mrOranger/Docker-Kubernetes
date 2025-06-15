@@ -31,3 +31,22 @@ CREATE INDEX idx_tax_code ON professors (tax_code);
 
 ALTER TABLE professors
 ADD CONSTRAINT fk_phone_id FOREIGN KEY (phone_id) REFERENCES phones (id) ON DELETE SET NULL;
+
+DELIMITER %
+
+CREATE PROCEDURE select_professors ()
+BEGIN
+    SELECT professors.*, phones.contact_prefix, phones.contact_number, phones.contact_type
+    FROM professors
+        JOIN phones ON phones.id = professors.phone_id;
+END%
+
+CREATE PROCEDURE select_professor (tax_code VARCHAR(50))
+BEGIN
+    SELECT professors.*, phones.contact_prefix, phones.contact_number, phones.contact_type
+        FROM professors
+        JOIN phones ON phones.id = professors.phone_id
+        WHERE UPPER(professors.tax_code) = UPPER(tax_code);
+END%
+
+DELIMITER ;
