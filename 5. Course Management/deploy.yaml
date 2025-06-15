@@ -1,0 +1,116 @@
+version: '3.8'
+name: course-management
+
+services:
+    proxy:
+        container_name: proxy
+        build:
+            context: ./
+            dockerfile: proxy.dockerfile
+        ports:
+            - 80:80
+        networks:
+            - course-management-network
+        depends_on:
+            - course-service
+            - professor-service
+            - student-service
+
+    cache:
+        image: redis
+        container_name: cache
+        networks:
+            - course-management-network
+
+    course-service:
+        container_name: course-service
+        build:
+            context: ./services/course
+            dockerfile: deploy.dockerfile
+        env_file:
+            - ./services/course/.env
+        networks:
+            - course-management-network
+        volumes:
+            - courses-node-module:/var/www/node_modules
+        depends_on:
+            - cache
+            - course-database
+
+    course-database:
+        container_name: course-database
+        build:
+            context: ./databases/course
+            dockerfile: database.dockerfile
+        env_file:
+            - ./databases/course/.env
+        networks:
+            - course-management-network
+        volumes:
+            - database-course-volume:/var/lib/mysql
+
+    professor-database:
+        container_name: professor-database
+        build:
+            context: ./databases/professor
+            dockerfile: database.dockerfile
+        env_file:
+            - ./databases/professor/.env
+        networks:
+            - course-management-network
+        volumes:
+            - database-professor-volume:/var/lib/mysql
+
+    professor-service:
+        container_name: professor-service
+        build:
+            context: ./services/professor
+            dockerfile: deploy.dockerfile
+        env_file:
+            - ./services/professor/.env
+        networks:
+            - course-management-network
+        volumes:
+            - professors-node-module:/var/www/node_modules
+        depends_on:
+            - cache
+            - professor-database
+
+    student-database:
+        container_name: student-database
+        build:
+            context: ./databases/student
+            dockerfile: database.dockerfile
+        env_file:
+            - ./databases/student/.env
+        networks:
+            - course-management-network
+        volumes:
+            - database-student-volume:/var/lib/mysql
+
+    student-service:
+        container_name: student-service
+        build:
+            context: ./services/student
+            dockerfile: deploy.dockerfile
+        env_file:
+            - ./services/student/.env
+        networks:
+            - course-management-network
+        volumes:
+            - students-node-module:/var/www/node_modules
+        depends_on:
+            - cache
+            - student-database
+
+networks:
+    course-management-network:
+        driver: bridge
+
+volumes:
+    courses-node-module:
+    students-node-module:
+    professors-node-module:
+    database-course-volume:
+    database-student-volume:
+    database-professor-volume:

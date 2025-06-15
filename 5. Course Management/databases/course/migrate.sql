@@ -94,7 +94,7 @@ BEGIN
     SELECT courses.*
     FROM courses
     JOIN courses_types ON courses_types.id = courses.course_type_id
-    JOIN editions ON editions.code = courses.edition_code;
+    JOIN editions ON editions.code = courses.edition_code
     WHERE courses.code = course_code;
 
 END%
