@@ -62,5 +62,24 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.formatOnSave": true,
         "editor.codeActions.triggerOnFocusChange": true
+    },
+    "[markdown]": {
+        "editor.fontFamily": "Monaco",
+        "editor.fontSize": 18,
+        "editor.lineHeight": 30,
+        "editor.lineNumbers": "on",
+        "editor.wordWrap": "on",
+        "editor.wordWrapColumn": 100,
+        "editor.unicodeHighlight.ambiguousCharacters": false,
+        "editor.unicodeHighlight.invisibleCharacters": false,
+        "diffEditor.ignoreTrimWhitespace": false,
+        "editor.quickSuggestions": {
+            "comments": "off",
+            "strings": "off",
+            "other": "off"
+        },
+        "cSpell.fixSpellingWithRenameProvider": true,
+        "cSpell.advanced.feature.useReferenceProviderWithRename": true,
+        "cSpell.advanced.feature.useReferenceProviderRemove": "/^#+\\s/"
     }
 }
