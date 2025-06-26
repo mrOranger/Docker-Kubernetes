@@ -1,0 +1,15 @@
+{
+    "name": "6.-kubernetes",
+    "version": "1.0.0",
+    "description": "Docker is a powerful tool to create Containers, reducing deploy and development time. On the other hand, it is not a complete solution for all real-world problems. In larger companies, working with thousands of clients, we have to deal with many problems, that cannot be afforded by Docker.",
+    "main": "index.js",
+    "scripts": {
+        "start": "node app.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^5.1.0"
+    }
+}
