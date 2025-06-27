@@ -77,7 +77,8 @@ Moreover, Containers in the same Pod shares an internal private network, that gu
 Kubernetes will automatically manage Pods for us, that is, we don't have to care about start and stop Pods, or replace one of them with another if the former fails. That is the core concept below Kubernetes, thus having an unique platform through which orchestrate or application that is divided in multiple atomic computational unit.
 
 ## Deployment
-Pod are managed by another Kubernetes resource that is the __Deployment__. A Deployment is nothing more that a set of instructions, indicating to Kubernetes the final state that must be achieved in terms of Pod. That is, using a Deployment, we can define the set of Pods that we want to achieve, and then Kubernetes will automatically create and manage the Pod using the Deployment. Moreover, if one or more Pod fail, the Deployment will replace or restore the failed ones. 
+
+Pod are managed by another Kubernetes resource that is the __Deployment__. A Deployment is nothing more that a set of instructions, indicating to Kubernetes the final state that must be achieved in terms of Pod. That is, using a Deployment, we can define the set of Pods that we want to achieve, and then Kubernetes will automatically create and manage the Pod using the Deployment. Moreover, if one or more Pod fail, the Deployment will replace or restore the failed ones.
 
 Let's start creating our first Deployment. First of all, we need an Image that will be used by Kubernetes to create the Pod. Attached to this folder, there is a [Dockerfile](./Dockerfile), which is used to create a dummy image containing a node.js application.
 The first thing to do is to create the Image, however, we have to remind that Kubernetes is working on a separate environment (that is Docker in my case), that is not connected to the host's machine network. That is, the only way, for now, allowing Kubernetes to use an Image, is to push that Image on a Docker Registry, giving a name.
@@ -88,16 +89,45 @@ After that the Image has been pushed correctly on the Docker Registry, we can cr
 kubectl create deployment hello-world --image=<your-dockerhub-username>/hello-world-kubernetes
 ```
 
-Once the deployment has been created, we can observe the result by using the command, that will show the list of Deployments available on our Cluster: 
+Once the deployment has been created, we can observe the result by using the command, that will show the list of Deployments available on our Cluster:
 
 ```bash
 kubectl get deployments
 ```
 
-moreover, if you would like to have a visual representation of the final result, you can use the minikube dashboard using following command: 
+moreover, if you would like to have a visual representation of the final result, you can use the minikube dashboard using following command:
 
 ```bash
 minikube dashboard
 ```
 
 Concluding this introduction to Deployments resources, we have to notice that the command `kubectl` stands for kube-control that is used to indicate to the Master Node, to create a new Pod, based on the first available Worker Node in the Cluster. The first available Worker Node, is represented by the less busy node in the Cluster.
+
+## Services
+When we created a Deployment, Kubernetes will manage authomatically the Pods defined inside of them, replacing the failing ones with new instances. Despite this distribution's model could seems very efficient, it contains a weak point, that is: communicating from client to a specific Pod is quite hard. That is, even though a Pod has an internal Ip address, we cannot be sure that the same Ip address will be maintained inside the Deployment.
+
+Therefore, we need an internal services allowing us to communicate easily to a specific Pod. That is, the __Service__ component, could be represented as an abstraction's layer acting like a bridge between the Deployment and an external Client.
+
+Supposing that you have created a Deployment using the commands above, we can "attach" a Service to the previous Deployment, using the following command:
+
+```bash
+kubectl expose deployment hello-world --type=LoadBalancer --port=80
+```
+
+By using this command, we are creating a new Service, attaching it directly to a Deployment named "hello-world", using the port 80that is the port exposed by the Pod, where the application is actually running. There a different strategies that we can use indicating the Service how requests are dispatched between Pods inside the Deployment, however, for this moment we will use only the __LoadBalancer__ strategy, which uses a Kubernetes internal Load Balancer.
+
+Now that we created the Service, we can observe the list of available Services, using the command:
+
+```bash
+kubectl get services
+```
+
+However, you will probably notice that, below the voice `external-ip` there is the `<pending>` label. That is, the service is working correctly, however, it cannot be reached from outside the cluster. Moreover, the port that we indicated in the previous command (that is 80), is mapped to another port number, manage automatically by the Deployment. To expose the Deployment outside the Cluster, we have to use a minikube command:
+
+```bash
+minikube service hello-world
+```
+
+that will expose the Service named hello-world (the name of the Service is the same of the Deployment attached to), outside the minikube cluster. However, in real scenarios, most of the time the cloud will have a specific cluster command to expose the deployment.
+
+Once the command has been execute successfully, Kubernetes will indicate to you the Ip address through which we can reach our Deploymnet. Moreover, you will notice that the final Ip address is not the same inside the Cluster.
