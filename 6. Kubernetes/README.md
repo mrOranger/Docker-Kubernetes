@@ -1,4 +1,3 @@
-# Kubernetes
 
 Docker is a powerful tool to create Containers, reducing deploy and development time. On the other hand, it is not a complete solution for all real-world problems. In larger companies, working with thousands of clients, we have to deal with many problems, that cannot be afforded by Docker.
 
@@ -131,3 +130,67 @@ minikube service hello-world
 that will expose the Service named hello-world (the name of the Service is the same of the Deployment attached to), outside the minikube cluster. However, in real scenarios, most of the time the cloud will have a specific cluster command to expose the deployment.
 
 Once the command has been execute successfully, Kubernetes will indicate to you the Ip address through which we can reach our Deploymnet. Moreover, you will notice that the final Ip address is not the same inside the Cluster.
+
+## Auto-restarting a Pod
+
+You probably notice that, in the [app.js](./app.js) file there is a route `/error` that crashes the application. In the previous section, we adfirmed that a Deployment in a Kubernetes Cluster, will manage authomatically Pods that are crashed, trying to restart again. This is the reason behind the impossibilty of communicating with Pods inside a Deployment, using only the Ip address.
+
+Now, if we generate a failure to that specific Pod, you will probabily notice that after a while, Kubernetes will recreate the same up, and the service will be availabile again. This is an important feature in real-world application, because it guaratees us to maintain an accepable failure-resistence of our web-service. Therefore, even after a general failure, the application will still running.
+
+## Scaling Pods in Deployment
+
+Up to this moment, we created a single Deployment with only a Pod inside of it. This means that, if the Pods will goes down, the whole application will be unavailable, until the Pod will be restarted. However, what happens if the Pod crahes and it cannot be restarted, let's suppose that an infine loop cause the chrashed of the Pod. How can we manage a scenario like this one?
+
+Solving the previous scenario, requires to known the concept of __Replica__. A Replica is nothing more that a copy of a Pod, that is distributed under the same Deployment. If you remember, at the beginning we created the Deployment using the `--type=LoadBalancer` option, that is: each requests made by a client to a Deploymnet, will be distributed over the Pods inside the Deployments, using a Load Balancer, managed by Kubernetes.
+
+Threfore, if we create a Deployment with three replicas, each incoming request will be dispatched by the Load Balancer on the most idle Pod. Moreover, if a Pod in the Deployment will fail, the remaining two Pods will continue to work, and the traffic will be distributed over them, as long as the Pod will be restarted or not.
+
+To create a Replica, we have to use the `scale` command with the `replicas` option: 
+
+```bash
+kubectl scale/deployment hello-world --replicas=3 
+```
+
+that is: we are scaling our deployment `hello-world` assigning 3 replicas to the deployment (that is adding two more Pods to the current deployment). Now, making a request to `/error` endpoint will cause a crash of the current Pod, however, the application will still running because the other two Pods are up and running.
+
+## Update Deployments
+
+Let's suppose that we made an update to our Deployment. Since a Deployment is based on a Docker Image, how can we propagate updates also to the Deployents, since we know that Images have to be re-build to see the updates. Let's start creating the new Image based on our Dockerfile, using the command:
+
+```bash
+docker build --tag=<your-username>/hello-world-kubernetes
+```
+
+Now that the Image has been successfully updated, we can update the Deployment, using the following command:
+
+```bash
+kubectl set image deployment/hello-world hello-world-kubernetes=<your-username>/hello-world-kubernetes
+```
+the first argument `deployment/hello-world` indicates the name of the deployment that we want update; then, `hello-world-kubernetes=<your-username>/hello-world-kubernetes`, speicfies in the left-hand part, the name of the Container that we want to update (automatically, Kubernetes assign to the Container the same name of the Image based on), then, the right-hand part is the name of the new Image to use. Running this command ... nothing changed.
+
+The reason behing this anomalous behaviour is that: if the name of the Image is not changed, then Kubernetes will propagate no updates to the deployment. To make the updated operatively, we have to update the name of the Image, specifically, we have to assign a different tag, making the Image's name different from the previous one. That is, running once again the previous command, using a different tag, will change the Deployment internal configuration:
+
+```bash
+docker build --tag=<your-username>/hello-world-kubernetes:2
+kubectl set image deployment/hello-world hello-world-kubernetes=<your-username>/hello-world-kubernetes:2
+``` 
+
+Let's suppose that this update will fail soon ... how can we restore the Cluster to the previous version? Fortunately, Kuberentes has a built-in mechanism of rollback, thanks to we can restore a previous Image used by our Deployment, using the command:
+
+```bash
+kubectl rollout undo deployment/hello-world
+```
+
+this command will rollback the Image to the previous one. However, how can we restore the Image not just to a previous one, but to an older one? We have to introduce a new concept that is the __History__. Each time an update is made on a Kubernetes cluster, it is stores inside an internal memory known as History. Using this memory and the command: 
+
+```bash
+kubectl rollout history deployment/hello-world
+```
+
+a list of all the previous revisions that we used is shown, with an incremental identifier that we can use in the next command:
+
+```bash
+kubectl rollout undo deployment/hello-world --to-revision=1
+```
+
+that will restore the status of the Deployment named `hello-world` to the version identified by the revision 1.
