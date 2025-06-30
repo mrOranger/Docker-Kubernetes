@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: hello-world
+spec:
+    replicas: 3
+    selector:
+        matchLabels:
+            deployment: hello-world
+    template:
+        metadata:
+            labels:
+                deployment: hello-world
+        spec:
+            containers:
+                - name: hello-world
+                  image: mroranger/hello-world-kubernetes:latest
+                  livenessProbe:
+                      httpGet:
+                          path: /health
+                          port: 80
+                      periodSeconds: 10
+                      initialDelaySeconds: 5
