@@ -1,0 +1,21 @@
+{
+    "name": "book-logger",
+    "version": "1.0.0",
+    "description": "Semplice applicazione Node.js per registrare libri giornalieri in file JSON",
+    "main": "app.js",
+    "scripts": {
+        "start": "node app.js",
+        "dev": "nodemon app.js"
+    },
+    "keywords": [],
+    "author": "Uno sviluppatore Node.js",
+    "license": "MIT",
+    "dependencies": {
+        "express": "^4.18.2",
+        "uuid": "^9.0.0"
+    },
+    "devDependencies": {
+        "nodemon": "^3.0.0"
+    }
+}
+

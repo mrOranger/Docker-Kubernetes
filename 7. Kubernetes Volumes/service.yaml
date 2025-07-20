@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: kubernetes-volumes
+spec:
+    type: LoadBalancer
+    selector:
+        deployment: kubernetes-volumes
+    ports:
+        - protocol: 'TCP'
+          port: 80
+          targetPort: 80

@@ -1,0 +1,17 @@
+version: '3.8'
+name: kubernetes-volumes
+
+services:
+    book:
+        container_name: book
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - 8000:80
+        volumes:
+            - node-modules:/var/www/node_modules
+            - books:/var/www/books
+volumes:
+    books:
+    node-modules:
