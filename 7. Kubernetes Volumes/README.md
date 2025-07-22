@@ -8,7 +8,7 @@ Volumes managed by Kubernetes are more complex than their Docker counterparts. W
 
 ## Volumes in Kubernetes
 
-Volumes in Kubernetes are defined in two way: __Volumes__ and __Persistente Volumes__. A Volume is a persistence unit attached to a specif Pod. When the Pod in destroyed, the attached Volume will be destroyed too. However, Persistent Volumes are not attached to a specific Pod, making the file stored inside the Volume persistent and not affected by any configuration's change. 
+Volumes in Kubernetes are defined in two way: __Volumes__ and __Persistent Volumes__. A Volume is a persistence unit attached to a specif Pod. When the Pod in destroyed, the attached Volume will be destroyed too. However, Persistent Volumes are not attached to a specific Pod, making the file stored inside the Volume persistent and not affected by any configuration's change.
 
 ## Attached Example
 
@@ -21,9 +21,9 @@ Attached to this folder, `deployment.yaml` and `service.yaml` files are used to 
 }
 ```
 
-Let's try to crash the whole application, making a PATCH request to `/error` endpoint. Waiting that Kubernetes restart the Pod, we will notice that, making a GET request on `/book` will return any book no more. In fact, as we mentioned before, Kubernete's volumes are attached to a single Pod, then if it failes the whole volume will be lost forever.
+Let's try to crash the whole application, making a PATCH request to `/error` endpoint. Waiting that Kubernetes restart the Pod, we will notice that, making a GET request on `/book` will return any book no more. In fact, as we mentioned before, Kubernete's volumes are attached to a single Pod, then if it fails the whole volume will be lost forever.
 
-Chaning the default's Kubernetes behaviour requires to specify a driver through which the Volumes will be defined. According to the official Kubernetes documentation, there are many different drivers to chose, however we will see only a small part of them.
+Changing the default's Kubernetes behavior requires to specify a driver through which the Volumes will be defined. According to the official Kubernetes documentation, there are many different drivers to chose, however we will see only a small part of them.
 
 ## Volumes Drivers
 
@@ -54,15 +54,15 @@ Working with multiple Pod requires a better approach in storing data using Volum
 
 Furthermore, there are many options that can be specified to this driver:
 
-- **DirectoryOrCreate**. Creates an empty directory in the path specified inside the Volume configuration. By default, the directory's permissions will be set to 0755.
+- __DirectoryOrCreate__. Creates an empty directory in the path specified inside the Volume configuration. By default, the directory's permissions will be set to 0755.
 
-- **Directory**. Attach the volume to an existing directory.
+- __Directory__. Attach the volume to an existing directory.
 
-- **FileOrCreate**. Creates an empty file if not exists, assigning by default le 0644 permission, having the same group and ownership of Kubelet.
+- __FileOrCreate__. Creates an empty file if not exists, assigning by default le 0644 permission, having the same group and ownership of Kubelet.
 
-- **File**. Attach the Volume to an existing file.
+- __File__. Attach the Volume to an existing file.
 
-- **Socket**. An Unix socket must exists at the given path.
+- __Socket__. An Unix socket must exists at the given path.
 
 A configuration example of this driver is the following:
 
@@ -82,18 +82,18 @@ spec:
 
 ```
 
-## Persistente Volume \& Persistent Volume Claim
+## Persistent Volume \& Persistent Volume Claim
 
-Persistent Volumes (PV) are Cluster's resources used to persist data independenlty from any Pods' lifecycle. Because Persistent Volumes are defined separately by any Pod, communication between the latter and the former must be done with another Resource that is the Persistent Volume Claim (PVC). In other words, a Persistent Volume Claim is a formal request made by a Pod, requiring access to a persistance unit defined by the Persistent Volume. The request must be accomplished by specifying the size of the Persistent Volume, comining it with the access mode.
+Persistent Volumes (PV) are Cluster's resources used to persist data independently from any Pods' lifecycle. Because Persistent Volumes are defined separately by any Pod, communication between the latter and the former must be done with another Resource that is the Persistent Volume Claim (PVC). In other words, a Persistent Volume Claim is a formal request made by a Pod, requiring access to a persistence unit defined by the Persistent Volume. The request must be accomplished by specifying the size of the Persistent Volume, coining it with the access mode.
 
-Since Persistent Volume and Persistent Volume Claim are Kubernetes' resources, we have to define them in two separate declaration files: [`volume.yaml`](./volume.yaml) and [`volume-claim.yaml`](./volume-claim.yaml). Let's start examinating the first file:
+Since Persistent Volume and Persistent Volume Claim are Kubernetes' resources, we have to define them in two separate declaration files: [`volume.yaml`](./volume.yaml) and [`volume-claim.yaml`](./volume-claim.yaml). Let's start examining the first file:
 
 ```yaml
 apiVersion: v1
 kind: PersistentVolume
-metadata: 
+metadata:
   name: book-volume
-spec: 
+spec:
   capacity:
     storage: 1Gi
   volumeMode: Filesystem
@@ -107,23 +107,23 @@ spec:
 
 The most important section is `spec`, inside the following properties stand:
 
-* `capacity` defines the maximum storage capacity of this resource; 
+- `capacity` defines the maximum storage capacity of this resource;
 
-* `volumeMode` defines how the volume is mounted and attached to the Pod, there are two options that can be used: `Filesystem` and `Block`. The former mounts a directory inside the Pod, the latter acts like an external device attached to the Pod. 
+- `volumeMode` defines how the volume is mounted and attached to the Pod, there are two options that can be used: `Filesystem` and `Block`. The former mounts a directory inside the Pod, the latter acts like an external device attached to the Pod.
 
-* `storageClassName` defines the type of storage object to be used.
+- `storageClassName` defines the type of storage object to be used.
 
-* `accessModes` declares how the Persistent Volume will be used, just like the previous example with normal Volume. 
+- `accessModes` declares how the Persistent Volume will be used, just like the previous example with normal Volume.
 
-* Finally, `hostPath` indicates where the Volume will be attached to the Pod, and which type will be used.
+- Finally, `hostPath` indicates where the Volume will be attached to the Pod, and which type will be used.
 
 ## Environment Variables
 
-Using environment variables in Kubernetes can be done with different approaches. The commonost and most intuitive consists in storing the envirnoment variables inside a project's folder to persist inside a Volume. Moreover, another approach cloud be use environment variables to pass inside the Docker Container. 
+Using environment variables in Kubernetes can be done with different approaches. The commonest and most intuitive consists in storing the environment variables inside a project's folder to persist inside a Volume. Moreover, another approach cloud be use environment variables to pass inside the Docker Container.
 
-Both of these approaches are not as flexible as we would like. The ideal configuration could be conists in defining the environment variables inside the Kuberentes configuration file. Fortunately, using the `env` properties inside the Continer's configuration of our Deployment, we can pass a set of environment variables to the Containers that will compose the Deployment. 
+Both of these approaches are not as flexible as we would like. The ideal configuration could be consts in defining the environment variables inside the Kuberentes configuration file. Fortunately, using the `env` properties inside the Container's configuration of our Deployment, we can pass a set of environment variables to the Containers that will compose the Deployment.
 
-Analysing the [`deployment.yaml`](./deployment.yaml) file, you will probably notice the following part:
+Analyzing the [`deployment.yaml`](./deployment.yaml) file, you will probably notice the following part:
 
 ```yaml
 containers:
@@ -136,7 +136,7 @@ containers:
         value: '80'
 ```
 
-Using the `env` directive, we are indicating to all the Containers defiened inside the following Deployment, that some environment variables will be used. Each environment variable must have a name and a corresponding value. Moreover, in the YAML file, strings must be used to indicate values of the variables.
+Using the `env` directive, we are indicating to all the Containers defined inside the following Deployment, that some environment variables will be used. Each environment variable must have a name and a corresponding value. Moreover, in the YAML file, strings must be used to indicate values of the variables.
 
 ### Config Map
 
@@ -146,7 +146,7 @@ Passing variables to Containers inside a Deployment, using the previous method i
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: kubernetes-volumes 
+  name: kubernetes-volumes
 data:
   APP_NAME: 'kubernetes-volumes'
   APP_PORT: '80'
@@ -159,9 +159,9 @@ Furthermore, we have to update the [`deployment.yaml`](./deployment.yaml), conne
 ```yaml
 env:
   - name: APP_NAME
-    valueFrom: 
+    valueFrom:
       configMapKeyRef:
-        name: kubernetes-volumes 
+        name: kubernetes-volumes
         key: APP_NAME
   - name: APP_PORT
      valueFrom:
@@ -170,4 +170,4 @@ env:
          key: APP_PORT
 ```
 
-Up to this moment, if the envirnoment variable must be connected to a Config Map, we have to declare it using the `valueFrom`, `configMapKeyRef` directives. Moreover, `name` indicates the name of the Config Map to use to resolve the environment variable, and `key` is key name of the environment variable to use.
+Up to this moment, if the environment variable must be connected to a Config Map, we have to declare it using the `valueFrom`, `configMapKeyRef` directives. Moreover, `name` indicates the name of the Config Map to use to resolve the environment variable, and `key` is key name of the environment variable to use.
