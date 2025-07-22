@@ -4,8 +4,8 @@ const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 
 const app = express();
-const PORT = 80;
 const DATA_DIR = path.join(__dirname, 'books');
+const { APP_NAME, APP_PORT } = process.env;
 
 app.use(express.json());
 
@@ -80,7 +80,7 @@ app.patch('/error', function (request, response) {
     process.exit(1);
 });
 
-app.listen(PORT, () => {
-    console.log(`📚 Server in ascolto sulla porta ${PORT}`);
+app.listen(APP_PORT, () => {
+    console.log(`${APP_NAME} in ascolto sulla porta ${APP_PORT}`);
 });
 

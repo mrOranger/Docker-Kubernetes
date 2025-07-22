@@ -1,25 +1,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: kubernetes-volumes
+  name: kubernetes-volumes
 spec:
-    replicas: 3
-    selector:
-        matchLabels:
-            deployment: kubernetes-volumes
-    template:
-        metadata:
-            labels:
-                deployment: kubernetes-volumes
-        spec:
-            containers:
-                - name: kubernetes-volumes
-                  image: mroranger/kubernetes-volumes:1
-                  volumeMounts:
-                      - mountPath: /var/www/books
-                        name: book-volumes
-            volumes:
-                - name: book-volumes
-                  hostPath:
-                      path: /var/www/data
-                      type: DirectoryOrCreate
+  replicas: 3
+  selector:
+    matchLabels:
+      deployment: kubernetes-volumes
+  template:
+    metadata:
+      labels:
+        deployment: kubernetes-volumes
+    spec:
+      containers:
+        - name: kubernetes-volumes
+          image: mroranger/kubernetes-volumes:3
+          env:
+            - name: APP_NAME
+              valueFrom: 
+                configMapKeyRef:
+                  name: kubernetes-volumes 
+                  key: APP_NAME
+            - name: APP_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: kubernetes-volumes
+                  key: APP_PORT
+          volumeMounts:
+            - mountPath: /var/www/books
+              name: book-volumes
+      volumes:
+        - name: book-volumes
+          persistentVolumeClaim:
+            claimName: book-volume-claim
