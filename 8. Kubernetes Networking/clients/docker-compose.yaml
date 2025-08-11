@@ -1,0 +1,43 @@
+version: '3.8'
+name: clients
+
+services:
+  clients_database:
+    image: mroranger/kubernetes-networking-clients-database:latest
+    container_name: clients_database
+    build:
+      context: ./
+      dockerfile: database.dockerfile
+    ports:
+      - 3000:3306
+    env_file:
+      - ./.env
+    networks:
+      - kubernetes-network
+    volumes:
+      - database-volume:/var/lib/mysql
+  clients_service:
+    image: mroranger/kubernetes-networking-clients-service:latest
+    container_name: clients_service
+    build:
+      context: ./
+      dockerfile: service.dockerfile
+    ports:
+      - 8000:80
+    env_file:
+      - ./.env
+    networks:
+      - kubernetes-network
+    volumes:
+      - ./:/var/www
+      - service-node-modules:/var/www/node_modules
+    depends_on:
+      - clients_database
+networks:
+  kubernetes-network:
+    external: true
+
+volumes:
+  database-volume:
+  service-volume:
+  service-node-modules:

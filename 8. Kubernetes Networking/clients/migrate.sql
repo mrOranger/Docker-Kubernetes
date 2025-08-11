@@ -14,13 +14,17 @@ DELIMITER %
 
 CREATE PROCEDURE select_clients()
 BEGIN
-    SELECT * FROM clients;
+    SELECT *
+    FROM clients
+    ORDER BY clients.created_at DESC;
 END%
 
 CREATE PROCEDURE select_client(tax_code VARCHAR(255))
 BEGIN
-    SELECT * FROM clients
+    SELECT * 
+    FROM clients
     WHERE clients.tax_code = tax_code
+    ORDER BY clients.created_at DESC;
 END%
 
 CREATE PROCEDURE insert_client (
@@ -29,8 +33,8 @@ CREATE PROCEDURE insert_client (
     last_name VARCHAR(255)
 )
 BEGIN
-    INSERT INTO clients (tax_code, first_name, last_name)
-    VALUES (tax_code, first_name, last_name);
+    INSERT INTO clients (tax_code, first_name, last_name, created_at)
+    VALUES (tax_code, first_name, last_name, CURRENT_TIMESTAMP);
 END%
 
 CREATE PROCEDURE update_client (
@@ -40,35 +44,18 @@ CREATE PROCEDURE update_client (
 )
 BEGIN
     UPDATE clients
-    SET clients.first_name = first_name,
-        clients.last_name = last_name
-    WHERE clients.tax_code = tax_code;
+    SET
+        clients.first_name = first_name,
+        clients.last_name = last_name,
+        clients.updated_at = CURRENT_TIMESTAMP
+    WHERE
+        clients.tax_code = tax_code;
 END%
 
 CREATE PROCEDURE delete_client(tax_code VARCHAR(255))
 BEGIN
     DELETE FROM clients
-    WHERE clients.tax_code = tax_code
+    WHERE clients.tax_code = tax_code;
 END%
-
-DELIMITER $
-
-CREATE TRIGGER set_created_at
-AFTER INSERT ON clients
-FOR EACH ROW
-    BEGIN
-        SET NEW.created_at = NOW();
-END$
-
-DELIMITER ;
-
-DELIMITER $
-
-CREATE TRIGGER set_updated_at
-BEFORE UPDATE ON clients
-FOR EACH ROW
-    BEGIN
-        SET NEW.updated_at = NOW();
-END$
 
 DELIMITER ;

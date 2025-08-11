@@ -1,0 +1,43 @@
+version: '3.8'
+name: orders
+
+services:
+  orders_database:
+    image: mroranger/kubernetes-networking-orders-database:latest
+    container_name: orders_database
+    build:
+      context: ./
+      dockerfile: database.dockerfile
+    ports:
+      - 3001:3306
+    env_file:
+      - ./.env
+    networks:
+      - kubernetes-network
+    volumes:
+      - database-volume:/var/lib/mysql
+  orders_service:
+    image: mroranger/kubernetes-networking-orders-service:latest
+    container_name: orders_service
+    build:
+      context: ./
+      dockerfile: service.dockerfile
+    ports:
+      - 8001:80
+    env_file:
+      - ./.env
+    networks:
+      - kubernetes-network
+    volumes:
+      - ./:/var/www
+      - service-node-modules:/var/www/node_modules
+    depends_on:
+      - orders_database
+networks:
+  kubernetes-network:
+    external: true
+
+volumes:
+  database-volume:
+  service-volume:
+  service-node-modules:

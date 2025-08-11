@@ -14,7 +14,7 @@
     "editor.codeLens": true,
     "editor.inlayHints.enabled": "off",
     "workbench.sideBar.location": "right",
-    "window.zoomLevel": 1,
+    "window.zoomLevel": 1.5,
     "[json]": {
         "editor.autoIndent": "keep",
         "editor.formatOnSave": true,
