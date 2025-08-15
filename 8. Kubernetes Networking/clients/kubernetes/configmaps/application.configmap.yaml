@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: clients-application-config
+data:
+    APP_NAME: 'clients'
+    APP_PORT: '80'
+    DATABASE_HOST: 'clients-database-service.default'
+    DATABASE_PORT: '3000'
+    DATABASE_TYPE: 'mysql'
+    DATABASE_ROOT_USER: 'root'
+    DATABASE_ROOT_PASSWORD: 'root@2025'
+    DATABASE_USER: 'admin'
+    DATABASE_PASSWORD: 'admin@@2025'
+    DATABASE_NAME: 'clients'
+    ORDERS_SERVICE_HOST: 'orders-application-service.default'
+    PRODUCTS_SERVICE_HOST: 'products-application-service.default'

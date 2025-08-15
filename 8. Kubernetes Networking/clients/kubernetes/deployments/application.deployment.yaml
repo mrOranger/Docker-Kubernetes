@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: clients-application-deployment
+spec:
+    replicas: 3
+    selector:
+        matchLabels:
+            deployment: clients-application-deployment
+    template:
+        metadata:
+            labels:
+                deployment: clients-application-deployment
+        spec:
+            containers:
+                - name: clients-service
+                  image: mroranger/kubernetes-networking-clients-service:latest
+                  envFrom:
+                      - configMapRef:
+                            name: clients-application-config

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: orders-application-service
+spec:
+    type: LoadBalancer
+    selector:
+        deployment: orders-application-deployment
+    ports:
+        - protocol: 'TCP'
+          port: 80
+          targetPort: 80

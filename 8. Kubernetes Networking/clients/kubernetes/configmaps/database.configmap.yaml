@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: clients-database-config
+data:
+    DATABASE_HOST: 'clients-database-service.default'
+    DATABASE_PORT: '3306'
+    DATABASE_TYPE: 'mysql'
+    DATABASE_ROOT_USER: 'root'
+    DATABASE_ROOT_PASSWORD: 'root@2025'
+    DATABASE_USER: 'admin'
+    DATABASE_PASSWORD: 'admin@@2025'
+    DATABASE_NAME: 'clients'
+    TZ: 'Europe/Rome'

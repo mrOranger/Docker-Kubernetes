@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+    name: products-database-statefulset
+spec:
+    selector:
+        matchLabels:
+            statefulset: products-database-statefulset
+    template:
+        metadata:
+            labels:
+                statefulset: products-database-statefulset
+        spec:
+            containers:
+                - name: products-database
+                  image: mroranger/kubernetes-networking-products-database:latest
+                  volumeMounts:
+                      - name: products-database-volume
+                        mountPath: /var/lib/mysql
+                  envFrom:
+                      - configMapRef:
+                            name: products-database-config
+                  ports:
+                      - containerPort: 3306
+            volumes:
+                - name: products-database-volume
+                  persistentVolumeClaim:
+                      claimName: products-database-volume-claim

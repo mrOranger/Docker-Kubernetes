@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: products-database-config
+data:
+    DATABASE_HOST: 'products-database-service.default'
+    DATABASE_PORT: '3002'
+    DATABASE_TYPE: 'mysql'
+    DATABASE_ROOT_USER: 'root'
+    DATABASE_ROOT_PASSWORD: 'root@2025'
+    DATABASE_USER: 'admin'
+    DATABASE_PASSWORD: 'admin@@2025'
+    DATABASE_NAME: 'products'
+    TZ: 'Europe/Rome'

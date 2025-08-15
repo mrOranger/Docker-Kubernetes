@@ -1,6 +1,9 @@
 .gitignore
 .dockerignore
+
 database.dockerfile
 service.dockerfile
+docker-compose.yaml
 
 /node_modules/
+/kubernetes/

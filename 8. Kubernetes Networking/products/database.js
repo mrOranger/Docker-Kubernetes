@@ -1,7 +1,7 @@
 import database from 'mysql2/promise';
 
 const {
-    DATABASE_HOST = 'products_database',
+    DATABASE_HOST = 'products-database-service.default',
     DATABASE_PORT = 3306,
     DATABASE_USER = 'admin',
     DATABASE_PASSWORD = 'admin@@2025',
@@ -18,5 +18,3 @@ export const pool = database.createPool({
     connectionLimit: 10,
     queueLimit: 0,
 });
-
-

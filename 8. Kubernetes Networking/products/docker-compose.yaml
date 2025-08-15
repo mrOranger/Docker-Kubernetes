@@ -2,42 +2,42 @@ version: '3.8'
 name: products
 
 services:
-  products_database:
-    image: mroranger/kubernetes-networking-products-database:latest
-    container_name: products_database
-    build:
-      context: ./
-      dockerfile: database.dockerfile
-    ports:
-      - 3002:3306
-    env_file:
-      - ./.env
-    networks:
-      - kubernetes-network
-    volumes:
-      - database-volume:/var/lib/mysql
-  products_service:
-    image: mroranger/kubernetes-networking-products-service:latest
-    container_name: products_service
-    build:
-      context: ./
-      dockerfile: service.dockerfile
-    ports:
-      - 8002:80
-    env_file:
-      - ./.env
-    networks:
-      - kubernetes-network
-    volumes:
-      - ./:/var/www
-      - service-node-modules:/var/www/node_modules
-    depends_on:
-      - products_database
+    products_database:
+        image: mroranger/kubernetes-networking-products-database:latest
+        container_name: products_database
+        build:
+            context: ./
+            dockerfile: database.dockerfile
+        ports:
+            - 3002:3306
+        env_file:
+            - ./.env
+        networks:
+            - kubernetes-network
+        volumes:
+            - database-volume:/var/lib/mysql
+    products_service:
+        image: mroranger/kubernetes-networking-products-service:latest
+        container_name: products_service
+        build:
+            context: ./
+            dockerfile: service.dockerfile
+        ports:
+            - 8002:80
+        env_file:
+            - ./.env
+        networks:
+            - kubernetes-network
+        volumes:
+            - ./:/var/www
+            - service-node-modules:/var/www/node_modules
+        depends_on:
+            - products_database
 networks:
-  kubernetes-network:
-    external: true
+    kubernetes-network:
+        external: true
 
 volumes:
-  database-volume:
-  service-volume:
-  service-node-modules:
+    database-volume:
+    service-volume:
+    service-node-modules:

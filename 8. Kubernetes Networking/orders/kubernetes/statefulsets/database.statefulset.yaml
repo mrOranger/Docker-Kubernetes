@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: StatefulSet 
+metadata:
+    name: orders-database-statefulset
+spec:
+    selector:
+        matchLabels:
+            statefulset: orders-database-statefulset
+    template:
+        metadata:
+            labels:
+                statefulset: orders-database-statefulset
+        spec:
+            containers:
+                - name: orders-database
+                  image: mroranger/kubernetes-networking-orders-database:latest
+                  volumeMounts:
+                      - name: orders-database-volume
+                        mountPath: /var/lib/mysql
+                  envFrom:
+                      - configMapRef:
+                            name: orders-database-configmap
+                  ports:
+                      - containerPort: 3306
+            volumes:
+                - name: orders-database-volume
+                  persistentVolumeClaim:
+                      claimName: orders-database-volume-claim

@@ -1,8 +1,8 @@
 import database from 'mysql2/promise';
 
 const {
-    DATABASE_HOST = 'clients_database',
-    DATABASE_PORT = 3306,
+    DATABASE_HOST = 'clients-database-service.default',
+    DATABASE_PORT = 3000,
     DATABASE_USER = 'admin',
     DATABASE_PASSWORD = 'admin@@2025',
     DATABASE_NAME = 'clients',

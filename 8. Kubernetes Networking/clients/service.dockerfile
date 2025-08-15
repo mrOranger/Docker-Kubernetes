@@ -8,12 +8,12 @@ COPY --chown=clients-user:clients-group package.json .
 
 RUN npm install
 
-COPY --chown=clients-user:clients-group app.js .
-COPY --chown=clients-user:clients-group controllers controllers
-COPY --chown=clients-user:clients-group services services
+COPY --chown=clients-user:clients-group . .
 
 ENV APP_NAME clients
 ENV APP_PORT 80
+ENV ORDERS_SERVICE_HOST orders-application-service.default
+ENV PRODUCTS_SERVICE_HOST products-application-service.default
 
 EXPOSE ${APP_PORT}
 

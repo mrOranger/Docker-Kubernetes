@@ -1,7 +1,5 @@
 FROM mysql:latest
 
-WORKDIR /var/www
-
 COPY migrate.sql /docker-entrypoint-initdb.d/migrate.sql
 
 ENV PORT 3306

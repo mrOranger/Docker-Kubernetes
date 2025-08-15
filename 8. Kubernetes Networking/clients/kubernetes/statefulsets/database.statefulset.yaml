@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+    name: clients-database-statefulset
+spec:
+    selector:
+        matchLabels:
+            statefulset: clients-database-statefulset
+    template:
+        metadata:
+            labels:
+                statefulset: clients-database-statefulset
+        spec:
+            containers:
+                - name: clients-database
+                  image: mroranger/kubernetes-networking-clients-database:latest
+                  volumeMounts:
+                      - name: clients-database-volume
+                        mountPath: /var/lib/mysql
+                  envFrom:
+                      - configMapRef:
+                            name: clients-database-config
+                  ports:
+                      - containerPort: 3306
+            volumes:
+                - name: clients-database-volume
+                  persistentVolumeClaim:
+                      claimName: clients-database-volume-claim

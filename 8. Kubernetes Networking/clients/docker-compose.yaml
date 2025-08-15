@@ -3,7 +3,6 @@ name: clients
 
 services:
   clients_database:
-    image: mroranger/kubernetes-networking-clients-database:latest
     container_name: clients_database
     build:
       context: ./
@@ -17,7 +16,6 @@ services:
     volumes:
       - database-volume:/var/lib/mysql
   clients_service:
-    image: mroranger/kubernetes-networking-clients-service:latest
     container_name: clients_service
     build:
       context: ./

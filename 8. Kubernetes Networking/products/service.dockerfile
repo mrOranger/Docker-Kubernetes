@@ -8,8 +8,7 @@ COPY --chown=products-user:products-group package.json .
 
 RUN npm install
 
-COPY --chown=products-user:products-group app.js .
-copy --chown=products-user:products-group controllers controllers
+COPY --chown=products-user:products-group . .
 
 ENV APP_NAME clients
 ENV APP_PORT 80

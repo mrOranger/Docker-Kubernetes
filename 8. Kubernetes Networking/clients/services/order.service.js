@@ -1,5 +1,5 @@
 const {
-    ORDERS_SERVICE_HOST = 'orders_service'
+    ORDERS_SERVICE_HOST = 'orders-application-service.default'
 } = process.env;
 
 export async function DELETE_CLIENT_ORDERS (taxCode) {

@@ -19,5 +19,5 @@ router.post('/', store);
 router.delete('/:code', remove);
 
 application.listen(APP_PORT, () =>
-    console.log(`${APP_NAME} listening on port ${APP_PORT}`)
+    console.log(`${APP_NAME} listening on port ${APP_PORT}`),
 );

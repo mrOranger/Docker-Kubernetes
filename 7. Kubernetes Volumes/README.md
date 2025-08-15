@@ -95,7 +95,7 @@ metadata:
   name: book-volume
 spec:
   capacity:
-    storage: 1Gi
+    storage: 1Giclients_database
   volumeMode: Filesystem
   storageClassName: standard
   accessModes:
